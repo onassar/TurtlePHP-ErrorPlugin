@@ -85,9 +85,9 @@
             $data = file_get_contents($file);
             $data = explode("\n", $data);
 
-            // slice it up to get at most 10 lines before and after error-line
-            $start = max(0, $line - 10);
-            $end = min($line + 1 + 10, 10 + 10 +1);
+            // slice it up to get at most <self::$_max> lines before and after error-line
+            $start = max(0, $line - self::$_max);
+            $end = min($line + 1 + self::$_max, (self::$_max * 2) +1);
             $lines = array_slice($data, $start, $end);
 
             // encode and include starting-line
@@ -98,7 +98,7 @@
             }
 
             // set which line the output is starting on, relative to the file
-            $block['start'] = max(1, $line - 10 + 1);
+            $block['start'] = max(1, $line - self::$_max + 1);
 
             // push to local storage
             array_push(self::$_blocks, $block);

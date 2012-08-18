@@ -22,6 +22,11 @@
             .focus {
                 color: red !important;
             }
+            pre {
+                overflow: auto;
+                word-wrap: normal;
+                white-space: pre;
+            }
             footer {
                 text-align: right;
             }
