@@ -20,7 +20,18 @@
                 padding: 60px 0 0;
             }
             .focus {
-                color: red !important;
+                /*color: red !important;*/
+            }
+            .focus span {
+                color: red;
+            }
+            .hovered {
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                background-color: red;
+                border-radius: 10px;
+                margin: 4px 0 0;
             }
             pre {
                 overflow: auto;
@@ -82,6 +93,15 @@
                         // selected line
                         var selected = $(block).find('li[data-line="<?= ($blocks[0]['line']) ?>"]');
                         selected.addClass('focus');
+
+                        // create a hovered-focus element for the errored-line
+                        var hovered = $('<div class="hovered"></div>'),
+                            position = selected.position();
+                        hovered.css({
+                            left: position.left - 57,
+                            top: position.top
+                        });
+                        $(document.body).append(hovered);
                     });
                 });
             </script>
