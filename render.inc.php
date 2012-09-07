@@ -55,10 +55,10 @@
         <div class="container">
             <div class="row">
                 <div class="span8 offset2">
-                    <p class="lead"><?= ($message) ?></p>
 <?php
     foreach ($blocks as $block):
 ?>
+                    <p class="lead"><?= ($block['message']) ?></p>
                     <div class="block">
                         <h4><?= ($block['path']) ?>:<?= ($block['line']) ?></h4>
                         <pre class="prettyprint gutter linenums:<?= ($block['start']) ?>"><?= ($block['output']) ?></pre>

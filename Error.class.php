@@ -39,15 +39,6 @@
         protected static $_message;
 
         /**
-         * _trace
-         *
-         * @var    String
-         * @access protected
-         * @static
-         */
-        protected static $_trace;
-
-        /**
          * init
          *
          * @access public
@@ -68,21 +59,28 @@
          * 
          * @access protected
          * @static
-         * @param  String $file
+         * @param  Integer $type
+         * @param  String $message
+         * @param  String $path
          * @param  Integer $line
+         * @param  Array $context
          * @return void
          */
-        protected static function _addBlock($file, $line)
+        protected static function _addBlock($type, $message, $path, $line, $context)
         {
             // setup the block
             $block = array(
-                'path' => $file,
+                'type' => $type,
+                'message' => $message,
+                'path' => $path,
                 'line' => $line + 1,
-                'output' => ''
+                'context' => $context,
+                'output' => '',
+                'start' => 1
             );
 
             // grab data contents
-            $data = file_get_contents($file);
+            $data = file_get_contents($path);
             $data = explode("\n", $data);
 
             // slice it up to get at most <self::$_max> lines before and after error-line
@@ -108,10 +106,11 @@
          * _encode
          * 
          * @access protected
+         * @static
          * @param  mixed $mixed
          * @return array
          */
-        protected function _encode($mixed)
+        protected static function _encode($mixed)
         {
             if (is_array($mixed)) {
                 foreach ($mixed as $key => $value) {
@@ -123,27 +122,34 @@
         }
 
         /**
+         * _log
+         *
+         * @access protected
+         * @static
+         * @param  Array $error
+         * @return void
+         */
+        protected static function _log(array $error)
+        {
+            error_log(
+                $error[1] . ' in ' .
+                $error[2] . ': ' .
+                $error[3]
+            );
+        }
+
+        /**
          * _render
          *
          * @access protected
          * @static
          * @return String
          */
-        public static function _render()
+        protected static function _render()
         {
-            // set the data for the view
-            $data = array(
-                'message' => self::$_message,
-                'blocks' => self::$_blocks
-            );
-
             // buffer handling
             ob_start();
-
-            // bring variables forward
-            foreach ($data as $__name => $__value) {
-                $$__name = $__value;
-            }
+            $blocks = self::$_blocks;
 
             // render view
             include 'render.inc.php';
@@ -165,20 +171,28 @@
          */
         public static function callback(\Turtle\Request $request, array $error)
         {
-            // parse generated error message
-            $pieces = explode('Stack trace:', $error['message']);
-            $full = trim($pieces[0]);
-            self::$_trace = trim($pieces[1]);
+            // retrieve params
+            $type = $error[0];
+            $message = $error[1];
+            $path = $error[2];
+            $line = $error[3];
+            $context = $error[4];
 
-            // get error message
-            $pieces = explode(' in ', $full);
-            self::$_message = trim($pieces[0]);
+            // add a block for the passed-in error
+            self::_addBlock(
+                $type,
+                $message,
+                $path,
+                ((int) $line - 1),
+                $context
+            );
 
-            // add a block for error-trakcing
-            self::_addBlock($error['file'], ((int) $error['line'] - 1));
+            // log it
+            self::_log($error);
 
             // render the error view
             $response = self::_render();
-            exit($response);
+            echo $response;
+            exit(0);
         }
     }
