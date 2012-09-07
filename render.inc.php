@@ -45,9 +45,11 @@
                 padding: 0 0 0 24px;
             }
             .prettyprint.gutter {
-              -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
-                 -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
-                      box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+                font-size: 11px;
+                padding-left: 20px;
+                -webkit-box-shadow: inset 50px 0 0 #fbfbfc, inset 51px 0 0 #ececf0;
+                -moz-box-shadow: inset 50px 0 0 #fbfbfc, inset 51px 0 0 #ececf0;
+                box-shadow: inset 50px 0 0 #fbfbfc, inset 51px 0 0 #ececf0;
             }
         </style>
     </head>
@@ -98,7 +100,7 @@
                         var hovered = $('<div class="hovered"></div>'),
                             position = selected.position();
                         hovered.css({
-                            left: position.left - 57,
+                            left: position.left - 69,
                             top: position.top
                         });
                         $(document.body).append(hovered);
