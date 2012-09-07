@@ -100,7 +100,7 @@
                         var hovered = $('<div class="hovered"></div>'),
                             position = selected.position();
                         hovered.css({
-                            left: position.left - 69,
+                            left: position.left - 75,
                             top: position.top
                         });
                         $(document.body).append(hovered);
