@@ -14,29 +14,32 @@
         /**
          * _blocks
          *
-         * @var    Array
+         * @var    array
          * @access protected
          * @static
          */
         protected static $_blocks = array();
 
         /**
-         * _max
+         * _errorMessage
          *
-         * @var    Integer
+         * @var    string
          * @access protected
          * @static
          */
-        protected static $_max = 10;
+        protected static $_errorMessage;
 
         /**
-         * _message
+         * _maxNumberOfLines
+         * 
+         * Maximum number of lines to show before and after a specific line
+         * number (eg. where an error or stacktrace-call occured).
          *
-         * @var    String
+         * @var    integer
          * @access protected
          * @static
          */
-        protected static $_message;
+        protected static $_maxNumberOfLines = 10;
 
         /**
          * init
@@ -47,10 +50,15 @@
          */
         public static function init()
         {
-            // add ths error-hook
+            // clear previous hooks; add them
+            \Turtle\Application::clearHooks('error');
             \Turtle\Application::addHook(
                 'error',
-                array('\Plugin\Error', 'callback')
+                array('\Plugin\Error', 'log')
+            );
+            \Turtle\Application::addHook(
+                'error',
+                array('\Plugin\Error', 'draw')
             );
         }
 
@@ -59,22 +67,18 @@
          * 
          * @access protected
          * @static
-         * @param  Integer $type
-         * @param  String $message
-         * @param  String $path
-         * @param  Integer $line
-         * @param  Array $context
+         * @param  string $path
+         * @param  integer $line
+         * @param  string $functionName
          * @return void
          */
-        protected static function _addBlock($type, $message, $path, $line, $context)
+        protected static function _addBlock($path, $line, $functionName)
         {
             // setup the block
             $block = array(
-                'type' => $type,
-                'message' => $message,
                 'path' => $path,
                 'line' => $line + 1,
-                'context' => $context,
+                'functionName' => $functionName,
                 'output' => '',
                 'start' => 1
             );
@@ -83,9 +87,9 @@
             $data = file_get_contents($path);
             $data = explode("\n", $data);
 
-            // slice it up to get at most <self::$_max> lines before and after error-line
-            $start = max(0, $line - self::$_max);
-            $end = min($line + 1 + self::$_max, (self::$_max * 2) +1);
+            // slice it up to get at most <self::$_maxNumberOfLines> lines before and after error-line
+            $start = max(0, $line - self::$_maxNumberOfLines);
+            $end = min($line + 1 + self::$_maxNumberOfLines, (self::$_maxNumberOfLines * 2) +1);
             $lines = array_slice($data, $start, $end);
 
             // encode and include starting-line
@@ -96,7 +100,7 @@
             }
 
             // set which line the output is starting on, relative to the file
-            $block['start'] = max(1, $line - self::$_max + 1);
+            $block['start'] = max(1, $line - self::$_maxNumberOfLines + 1);
 
             // push to local storage
             array_push(self::$_blocks, $block);
@@ -122,23 +126,6 @@
         }
 
         /**
-         * _log
-         *
-         * @access protected
-         * @static
-         * @param  Array $error
-         * @return void
-         */
-        protected static function _log(array $error)
-        {
-            error_log(
-                $error[1] . ' in ' .
-                $error[2] . ': ' .
-                $error[3]
-            );
-        }
-
-        /**
          * _render
          *
          * @access protected
@@ -150,6 +137,7 @@
             // buffer handling
             ob_start();
             $blocks = self::$_blocks;
+            $errorMessage = self::$_errorMessage;
 
             // render view
             include 'render.inc.php';
@@ -161,38 +149,76 @@
         }
 
         /**
-         * callback
+         * draw
          *
          * @access public
          * @static
          * @param  Request $request
-         * @param  Array $error
+         * @param  array $error
+         * @param  array $trace
          * @return void
          */
-        public static function callback(\Turtle\Request $request, array $error)
-        {
-            // retrieve params
-            $type = $error[0];
-            $message = $error[1];
-            $path = $error[2];
-            $line = $error[3];
-            $context = $error[4];
+        public static function draw(
+            \Turtle\Request $request,
+            array $error,
+            array $backtrace
+        ) {
+            // error message (for view)
+            self::$_errorMessage = $error[1];
 
-            // add a block for the passed-in error
-            self::_addBlock(
-                $type,
-                $message,
-                $path,
-                ((int) $line - 1),
-                $context
-            );
+            // filter calls to clean out function calls that aren't useful
+            $functionCalls = $backtrace;
+            $functionNames = array();
+            array_shift($functionCalls);
+            foreach ($functionCalls as $x => $call) {
+                if (isset($call['function'])) {
+                    if ($call['function'] === 'call_user_func_array') {
+                        continue;
+                    }
+                    array_push($functionNames, $call['function']);
+                }
+            }
 
-            // log it
-            self::_log($error);
+            // define blocks for output
+            foreach ($backtrace as $x => $marker) {
+                if (isset($marker['file'])) {
+                    $functionName = false;
+                    if (count($functionNames) > 0) {
+                        $functionName = array_shift($functionNames);
+                    }
+                    self::_addBlock(
+                        $marker['file'],
+                        ((int) $marker['line'] - 1),
+                        $functionName
+                    );
+                }
+            }
 
             // render the error view
             $response = self::_render();
             echo $response;
             exit(0);
+        }
+
+        /**
+         * log
+         *
+         * @access public
+         * @static
+         * @param  Request $request
+         * @param  array $error
+         * @param  array $trace
+         * @return void
+         */
+        public static function log(
+            \Turtle\Request $request,
+            array $error,
+            array $trace
+        ) {
+            error_log(
+                $error[1] . ' in ' .
+                $error[2] . ': ' .
+                $error[3]
+            );
         }
     }

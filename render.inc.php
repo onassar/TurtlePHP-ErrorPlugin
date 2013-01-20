@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" />
         <script type="text/javascript">
         //<![CDATA[
-            var start=(new Date()).getTime(),booted=[],included=false,required=[],js=function(assets,callback){if(arguments.length===1){callback=assets;assets=[]}var __boot=function(src,callback){var script=document.createElement("script"),scripts=document.getElementsByTagName("script"),length=scripts.length,loaded=function(){try{callback&&callback()}catch(exception){log("[Caught Exception]",exception)}};script.setAttribute("type","text/javascript");script.setAttribute("charset","utf-8");if(script.readyState){script.onreadystatechange=function(){if(script.readyState==="loaded"||script.readyState==="complete"){script.onreadystatechange=null;loaded()}}}else{script.onload=loaded}script.setAttribute("src",src);document.body.insertBefore(script,scripts[(length-1)].nextSibling)},__contains=function(arr,query){for(var x=0,l=arr.length;x<l;++x){if(arr[x]===query){return true}}return false};if(included===false){if(typeof assets==="string"){assets=[assets]}assets=assets.concat(required);included=true}if(typeof assets==="string"){if(__contains(booted,assets)){callback()}else{booted.push(assets);__boot(assets,callback)}}else{if(assets.constructor===Array){if(assets.length!==0){js(assets.shift(),function(){js(assets,callback)})}else{try{callback&&callback()}catch(exception){log("[Caught Exception]",exception)}}}}},log=function(){if(typeof(console)!=="undefined"&&console&&console.log){var args=arguments.length>1?arguments:arguments[0];console.log(args)}},queue=(function(){var stack=[];return{push:function(task){stack.push(task)},process:function(){var task;while(task=stack.shift()){task()}}}})(),ready=function(callback){var done=false,top=true,doc=window.document,root=doc.documentElement,add=doc.addEventListener?"addEventListener":"attachEvent",rem=doc.addEventListener?"removeEventListener":"detachEvent",pre=doc.addEventListener?"":"on",init=function(e){if(e.type==="readystatechange"&&doc.readyState!=="complete"){return}(e.type==="load"?window:doc)[rem](pre+e.type,init,false);if(!done&&(done=true)){callback.call(window,e.type||e)}},poll=function(){try{root.doScroll("left")}catch(e){setTimeout(poll,50);return}init("poll")};if(doc.readyState==="complete"){callback.call(window,"lazy")}else{if(doc.createEventObject&&root.doScroll){try{top=!window.frameElement}catch(e){}if(top){poll()}}doc[add](pre+"DOMContentLoaded",init,false);doc[add](pre+"readystatechange",init,false);window[add](pre+"load",init,false)}},require=function(assets){if(typeof assets==="string"){assets=[assets]}required=required.concat(assets)};
+            var start=(new Date).getTime(),booted=[],included=false,required=[],js=function(e,t){if(arguments.length===0){t=function(){};e=[]}else if(arguments.length===1){t=e;e=[]}var n=function(e,t){var n=document.createElement("script"),r=document.getElementsByTagName("script"),s=r.length,o=function(){try{t&&t()}catch(e){i(e)}};n.setAttribute("type","text/javascript");n.setAttribute("charset","utf-8");if(n.readyState){n.onreadystatechange=function(){if(n.readyState==="loaded"||n.readyState==="complete"){n.onreadystatechange=null;o()}}}else{n.onload=o}n.setAttribute("src",e);document.body.insertBefore(n,r[s-1].nextSibling)},r=function(e,t){for(var n=0,r=e.length;n<r;++n){if(e[n]===t){return true}}return false},i=function(e){log("Caught Exception:");log(e.stack);log("")};if(included===false){if(typeof e==="string"){e=[e]}e=e.concat(required);included=true}if(typeof e==="string"){if(r(booted,e)){t()}else{booted.push(e);n(e,t)}}else if(e.constructor===Array){if(e.length!==0){js(e.shift(),function(){js(e,t)})}else{try{t&&t()}catch(s){i(s)}}}},log=function(){if(typeof console!=="undefined"&&console&&console.log){var e=arguments.length>1?arguments:arguments[0];console.log(e)}},queue=function(){var e=[];return{push:function(t){e.push(t)},process:function(){var t;while(t=e.shift()){t()}}}}(),ready=function(e){var t=false,n=true,r=window.document,i=r.documentElement,s=r.addEventListener?"addEventListener":"attachEvent",o=r.addEventListener?"removeEventListener":"detachEvent",u=r.addEventListener?"":"on",a=function(n){if(n.type==="readystatechange"&&r.readyState!=="complete"){return}(n.type==="load"?window:r)[o](u+n.type,a,false);if(!t&&(t=true)){e()}},f=function(){try{i.doScroll("left")}catch(e){setTimeout(f,50);return}a("poll")};if(r.readyState==="complete"){e.call(window,"lazy")}else{if(r.createEventObject&&i.doScroll){try{n=!window.frameElement}catch(l){}if(n){f()}}r[s](u+"DOMContentLoaded",a,false);r[s](u+"readystatechange",a,false);window[s](u+"load",a,false)}},require=function(e){if(typeof e==="string"){e=[e]}required=required.concat(e)}
         //]]>
         </script>
         <!--[if lt IE 9]>
@@ -17,39 +17,97 @@
         <![endif]-->
         <style type="text/css">
             .container {
-                padding: 60px 0 0;
+                padding: 40px 0 0;
             }
-            .focus {
-                /*color: red !important;*/
+            h1 {
+                font-size: 24.5px;
+                border-bottom: 1px solid #eee;
+                font-weight: normal;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
             }
-            .focus span {
-                color: red;
+            h2 {
+                font-weight: normal;
+                line-height: 20px;
+                border: solid #eee;
+                border-width: 0 0 1px;
+                padding: 10px 0;
+                margin: 20px 0 10px;
+                font-size: 20px;
             }
-            .hovered {
+            h3 {
+                margin-top: 0;
+                padding: 0;
+                font-size: 15px;
+                font-weight: normal;
+                line-height: 20px;
+            }
+
+            .block {
+                position: relative;
+                padding-top: 10px;
+            }
+            .block .snip {
+                position: relative;
+            }
+            .block .snip .badges {
+                width: 400px;
                 position: absolute;
-                width: 10px;
-                height: 10px;
-                background-color: red;
-                border-radius: 10px;
-                margin: 4px 0 0;
+                left: -408px;
+                top: 6px;
             }
-            pre {
+            .block .snip .badges .badge.badge-inverse {
+                float: right;
+                margin-bottom: 2px;
+            }
+            .block .snip .badges .badge.badge-info {
+                float: right;
+                clear: right;
+            }
+            .block .snip pre {
                 overflow: auto;
                 word-wrap: normal;
                 white-space: pre;
+                margin-bottom: 10px !important;
             }
-            footer {
-                text-align: right;
-            }
-            footer span {
-                padding: 0 0 0 24px;
-            }
-            .prettyprint.gutter {
+            .block .snip pre.prettyprint.gutter {
                 font-size: 11px;
                 padding-left: 20px;
                 -webkit-box-shadow: inset 50px 0 0 #fbfbfc, inset 51px 0 0 #ececf0;
                 -moz-box-shadow: inset 50px 0 0 #fbfbfc, inset 51px 0 0 #ececf0;
                 box-shadow: inset 50px 0 0 #fbfbfc, inset 51px 0 0 #ececf0;
+            }
+            .block .snip pre li.focus {
+                color: #468847 !important;
+            }
+            .block .snip pre li.focus span {
+                color: inherit;
+            }
+            .block.first .snip pre li.focus {
+                color: #B94A48 !important;
+            }
+            .block .hovered {
+                position: absolute;
+                width: 12px;
+                height: 12px;
+                background-color: #468847;
+                border-radius: 4px;
+                margin: 4px 0 0;
+            }
+            .block.first .hovered {
+                background-color: #B94A48;
+            }
+            footer {
+                text-align: right;
+                font-size: 13px;
+                border-top: 1px solid #eee;
+                margin-top: 15px;
+                padding-top: 20px;
+                padding-bottom: 40px;
+                color: #777;
+            }
+            footer span {
+                padding: 0 0 0 24px;
             }
         </style>
     </head>
@@ -57,13 +115,30 @@
         <div class="container">
             <div class="row">
                 <div class="span8 offset2">
+                    <h1><?= ($errorMessage) ?></h1>
 <?php
-    foreach ($blocks as $block):
+    foreach ($blocks as $x => $block):
+        $classes = array('block');
+        if ($x === 0) {
+            array_push($classes, 'first');
+        }
+        if ($x === 1):
 ?>
-                    <p class="lead"><?= ($block['message']) ?></p>
-                    <div class="block">
-                        <h4><?= ($block['path']) ?>:<?= ($block['line']) ?></h4>
-                        <pre class="prettyprint gutter linenums:<?= ($block['start']) ?>"><?= ($block['output']) ?></pre>
+                    <h2>Backtrace</h2>
+<?php
+        endif;
+?>
+                    <div class="<?= implode(' ', $classes) ?>" data-line-number="<?= ($block['line']) ?>">
+                        <h3><?= ($block['path']) ?></h3>
+                        <div class="snip">
+                            <div class="badges">
+                                <span class="badge badge-inverse">Line #<?= ($block['line']) ?></span>
+                                <?php if ($block['functionName'] !== false): ?>
+                                    <span class="badge badge-info"><?= ($block['functionName']) ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <pre class="prettyprint gutter linenums:<?= ($block['start']) ?>"><?= ($block['output']) ?></pre>
+                        </div>
                     </div>
 <?php
     endforeach;
@@ -82,10 +157,11 @@
                     prettyPrint();
                     var blocks = $('.block');
                     jQuery.each(blocks, function(index, block) {
-
-                        var first = $(block).find('li[value]'),
+                        var focusingLineNumber = $(block).attr('data-line-number'),
+                            first = $(block).find('li[value]'),
                             lines = first.nextAll(),
                             previous = first.val();
+
                         first.attr('data-line', first.val());
                         jQuery.each(lines, function(index, line) {
                             $(line).attr('data-line', previous + 1);
@@ -93,7 +169,7 @@
                         });
 
                         // selected line
-                        var selected = $(block).find('li[data-line="<?= ($blocks[0]['line']) ?>"]');
+                        var selected = $(block).find('li[data-line="' + (focusingLineNumber) + '"]');
                         selected.addClass('focus');
 
                         // create a hovered-focus element for the errored-line
@@ -101,9 +177,9 @@
                             position = selected.position();
                         hovered.css({
                             left: position.left - 75,
-                            top: position.top
+                            top: position.top + 40
                         });
-                        $(document.body).append(hovered);
+                        $(block).append(hovered);
                     });
                 });
             </script>
