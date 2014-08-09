@@ -194,7 +194,8 @@
                 js(
                     [
                         // 'http://twitter.github.io/bootstrap/assets/js/google-code-prettify/prettify.js',
-                        'https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js',
+                        'https://google-code-prettify.googlecode.com/svn/loader/prettify.js',
+                        // 'https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js',
                         'https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'
                     ],
                     function() {
