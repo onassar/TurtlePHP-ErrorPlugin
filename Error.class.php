@@ -215,10 +215,13 @@
             array $error,
             array $trace
         ) {
-            error_log(
-                $error[1] . ' in ' .
-                $error[2] . ': ' .
-                $error[3]
+            $message = array(
+                'Message:   ' . ($error[1]),
+                'File:      ' . ($error[2]),
+                'Line:      ' . ($error[3]),
+                'Client:    ' . (IP),
+                'URI:       ' . ($_SERVER['REQUEST_URI'])
             );
+            error_log("\n" . implode("\n", $message));
         }
     }
