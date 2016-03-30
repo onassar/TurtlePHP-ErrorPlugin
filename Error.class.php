@@ -215,12 +215,16 @@
             array $error,
             array $trace
         ) {
+            $uri = $_SERVER['SCRIPT_NAME'];
+            if (isset($_SERVER['REQUEST_URI']) === true) {
+                $uri = $_SERVER['REQUEST_URI'];
+            }
             $message = array(
                 'Message:   ' . ($error[1]),
                 'File:      ' . ($error[2]),
                 'Line:      ' . ($error[3]),
                 'Client:    ' . (IP),
-                'URI:       ' . ($_SERVER['REQUEST_URI'])
+                'URI:       ' . ($uri)
             );
             error_log("\n" . implode("\n", $message));
         }

@@ -1,9 +1,17 @@
 <?php
 
+    // Support for CLI
+    $host = 'unknown';
+    if (isset($_SERVER['HTTP_HOST']) === true) {
+        $host = $_SERVER['HTTP_HOST'];
+    }
+
     // error headers
-    header(
-        ($_SERVER['SERVER_PROTOCOL']) . ' 503 Service Temporarily Unavailable'
-    );
+    $protocol = 'HTTP/1.1';
+    if (isset($_SERVER['SERVER_PROTOCOL']) === true) {
+        $protocol = $_SERVER['SERVER_PROTOCOL'];
+    }
+    header(($protocol) . ' 503 Service Temporarily Unavailable');
     header('Status: 503 Service Temporarily Unavailable');
     header('Retry-After: 7200');
     header('Content-Type: text/html; charset=utf-8');
@@ -163,7 +171,7 @@
                 <footer class="span8 offset2">
                     <span><?= date('D, d M o G:i:s T') ?></span>
                     <span><?= (IP) ?></span>
-                    <span><?= ($_SERVER['HTTP_HOST']) ?></span>
+                    <span><?= ($host) ?></span>
                 </footer>
             </div>
             <script type="text/javascript">
