@@ -207,13 +207,19 @@
             </script>
         </div> <!-- /container -->
         <script type="text/javascript">
+<?php
+    $file = file_get_contents('prettify.js', true);
+    echo $file;
+?>
+        </script>
+        <script type="text/javascript">
         //<![CDATA[
             ready(function() {
                 log('ready.post', (new Date()).getTime() - start);
                 js(
                     [
                         // 'http://twitter.github.io/bootstrap/assets/js/google-code-prettify/prettify.js',
-                        'https://raw.githubusercontent.com/google/code-prettify/master/src/prettify.js',
+                        // 'https://raw.githubusercontent.com/google/code-prettify/master/src/prettify.js',
                         // 'https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js',
                         'https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'
                     ],
