@@ -23,19 +23,18 @@
         <meta charset="utf-8" />
         <title>Error</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <!-- <link rel="stylesheet" type="text/css" href="http://twitter.github.io/bootstrap/assets/css/bootstrap.css" /> -->
-        <!-- <link rel="stylesheet" type="text/css" href="http://twitter.github.io/bootstrap/dist/css/bootstrap.css" /> -->
-        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" />
-        <!-- <link rel="stylesheet" type="text/css" href="http://twitter.github.io/bootstrap/assets/js/google-code-prettify/prettify.css" /> -->
-        <link rel="stylesheet" type="text/css" href="//raw.githubusercontent.com/google/code-prettify/master/src/prettify.css" />
-        <script type="text/javascript">
-        //<![CDATA[
-            var start=(new Date).getTime(),booted=[],included=false,required=[],js=function(e,t){if(arguments.length===0){t=function(){};e=[]}else if(arguments.length===1){t=e;e=[]}var n=function(e,t){var n=document.createElement("script"),r=document.getElementsByTagName("script"),s=r.length,o=function(){try{t&&t()}catch(e){i(e)}};n.setAttribute("type","text/javascript");n.setAttribute("charset","utf-8");if(n.readyState){n.onreadystatechange=function(){if(n.readyState==="loaded"||n.readyState==="complete"){n.onreadystatechange=null;o()}}}else{n.onload=o}n.setAttribute("src",e);document.body.insertBefore(n,r[s-1].nextSibling)},r=function(e,t){for(var n=0,r=e.length;n<r;++n){if(e[n]===t){return true}}return false},i=function(e){log("Caught Exception:");log(e.stack);log("")};if(included===false){if(typeof e==="string"){e=[e]}e=e.concat(required);included=true}if(typeof e==="string"){if(r(booted,e)){t()}else{booted.push(e);n(e,t)}}else if(e.constructor===Array){if(e.length!==0){js(e.shift(),function(){js(e,t)})}else{try{t&&t()}catch(s){i(s)}}}},log=function(){if(typeof console!=="undefined"&&console&&console.log){var e=arguments.length>1?arguments:arguments[0];console.log(e)}},queue=function(){var e=[];return{push:function(t){e.push(t)},process:function(){var t;while(t=e.shift()){t()}}}}(),ready=function(e){var t=false,n=true,r=window.document,i=r.documentElement,s=r.addEventListener?"addEventListener":"attachEvent",o=r.addEventListener?"removeEventListener":"detachEvent",u=r.addEventListener?"":"on",a=function(n){if(n.type==="readystatechange"&&r.readyState!=="complete"){return}(n.type==="load"?window:r)[o](u+n.type,a,false);if(!t&&(t=true)){e()}},f=function(){try{i.doScroll("left")}catch(e){setTimeout(f,50);return}a("poll")};if(r.readyState==="complete"){e.call(window,"lazy")}else{if(r.createEventObject&&i.doScroll){try{n=!window.frameElement}catch(l){}if(n){f()}}r[s](u+"DOMContentLoaded",a,false);r[s](u+"readystatechange",a,false);window[s](u+"load",a,false)}},require=function(e){if(typeof e==="string"){e=[e]}required=required.concat(e)}
-        //]]>
-        </script>
-        <!--[if lt IE 9]>
-        <script src="/static/js/vendors/html5.js"></script>
-        <![endif]-->
+        <style type="text/css">
+<?php
+    $file = file_get_contents('assets/bootstrap-combined.min.css', true);
+    echo $file;
+?>
+        </style>
+        <style type="text/css">
+<?php
+    $file = file_get_contents('assets/prettify.css', true);
+//     echo $file;
+?>
+        </style>
         <style type="text/css">
             .container {
                 padding: 40px 0 0;
@@ -131,7 +130,6 @@
                 padding: 0 0 0 24px;
             }
         </style>
-        <!-- <link rel="stylesheet" type="text/css" href="http://twitter.github.io/bootstrap/assets/css/bootstrap-responsive.css" /> -->
     </head>
     <body>
         <div class="container">
@@ -174,63 +172,45 @@
                     <span><?= ($host) ?></span>
                 </footer>
             </div>
-            <script type="text/javascript">
-                queue.push(function() {
-                    prettyPrint();
-                    var blocks = $('.block');
-                    jQuery.each(blocks, function(index, block) {
-                        var focusingLineNumber = $(block).attr('data-line-number'),
-                            first = $(block).find('li[value]'),
-                            lines = first.nextAll(),
-                            previous = first.val();
-
-                        first.attr('data-line', first.val());
-                        jQuery.each(lines, function(index, line) {
-                            $(line).attr('data-line', previous + 1);
-                            ++previous;
-                        });
-
-                        // selected line
-                        var selected = $(block).find('li[data-line="' + (focusingLineNumber) + '"]');
-                        selected.addClass('focus');
-
-                        // create a hovered-focus element for the errored-line
-                        var hovered = $('<div class="hovered"></div>'),
-                            position = selected.position();
-                        hovered.css({
-                            left: position.left - 75,
-                            top: position.top + 40
-                        });
-                        $(block).append(hovered);
-                    });
-                });
-            </script>
-        </div> <!-- /container -->
+        </div>
         <script type="text/javascript">
 <?php
-    $file = file_get_contents('prettify.js', true);
+    $file = file_get_contents('assets/prettify.js', true);
+    echo $file;
+?>
+<?php
+    $file = file_get_contents('assets/jQuery.min.js', true);
     echo $file;
 ?>
         </script>
         <script type="text/javascript">
-        //<![CDATA[
-            ready(function() {
-                log('ready.post', (new Date()).getTime() - start);
-                js(
-                    [
-                        // 'http://twitter.github.io/bootstrap/assets/js/google-code-prettify/prettify.js',
-                        // 'https://raw.githubusercontent.com/google/code-prettify/master/src/prettify.js',
-                        // 'https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js',
-                        'https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'
-                    ],
-                    function() {
-                        log('js.post', (new Date()).getTime() - start);
-                        queue.process();
-                        log('queue.post', (new Date()).getTime() - start);
-                    }
-                );
+            prettyPrint();
+            var blocks = $('.block');
+            jQuery.each(blocks, function(index, block) {
+                var focusingLineNumber = $(block).attr('data-line-number'),
+                    first = $(block).find('li[value]'),
+                    lines = first.nextAll(),
+                    previous = first.val();
+
+                first.attr('data-line', first.val());
+                jQuery.each(lines, function(index, line) {
+                    $(line).attr('data-line', previous + 1);
+                    ++previous;
+                });
+
+                // selected line
+                var selected = $(block).find('li[data-line="' + (focusingLineNumber) + '"]');
+                selected.addClass('focus');
+
+                // create a hovered-focus element for the errored-line
+                var hovered = $('<div class="hovered"></div>'),
+                    position = selected.position();
+                hovered.css({
+                    left: position.left - 75,
+                    top: position.top + 40
+                });
+                $(block).append(hovered);
             });
-        //]]>
         </script>
     </body>
 </html>
