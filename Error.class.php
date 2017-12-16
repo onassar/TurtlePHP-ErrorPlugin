@@ -14,8 +14,8 @@
         /**
          * _blocks
          *
-         * @var    array
-         * @access protected
+         * @var     array
+         * @access  protected
          * @static
          */
         protected static $_blocks = array();
@@ -23,8 +23,8 @@
         /**
          * _errorMessage
          *
-         * @var    string
-         * @access protected
+         * @var     string
+         * @access  protected
          * @static
          */
         protected static $_errorMessage;
@@ -35,8 +35,8 @@
          * Maximum number of lines to show before and after a specific line
          * number (eg. where an error or stacktrace-call occured).
          *
-         * @var    integer
-         * @access protected
+         * @var     integer
+         * @access  protected
          * @static
          */
         protected static $_maxNumberOfLines = 10;
@@ -44,9 +44,9 @@
         /**
          * init
          *
-         * @access public
+         * @access  public
          * @static
-         * @return void
+         * @return  void
          */
         public static function init()
         {
@@ -65,12 +65,12 @@
         /**
          * _addBlock
          * 
-         * @access protected
+         * @access  protected
          * @static
-         * @param  string $path
-         * @param  integer $line
-         * @param  string $functionName
-         * @return void
+         * @param   string $path
+         * @param   integer $line
+         * @param   string $functionName
+         * @return  void
          */
         protected static function _addBlock($path, $line, $functionName)
         {
@@ -109,14 +109,14 @@
         /**
          * _encode
          * 
-         * @access protected
+         * @access  protected
          * @static
-         * @param  mixed $mixed
-         * @return array
+         * @param   mixed $mixed
+         * @return  array
          */
         protected static function _encode($mixed)
         {
-            if (is_array($mixed)) {
+            if (is_array($mixed) === true) {
                 foreach ($mixed as $key => $value) {
                     $mixed[$key] = self::_encode($value);
                 }
@@ -128,9 +128,9 @@
         /**
          * _render
          *
-         * @access protected
+         * @access  protected
          * @static
-         * @return String
+         * @return  string
          */
         protected static function _render()
         {
@@ -151,12 +151,12 @@
         /**
          * draw
          *
-         * @access public
+         * @access  public
          * @static
-         * @param  Request $request
-         * @param  array $error
-         * @param  array $trace
-         * @return void
+         * @param   Request $request
+         * @param   array $error
+         * @param   array $trace
+         * @return  void
          */
         public static function draw(
             \Turtle\Request $request,
@@ -203,12 +203,12 @@
         /**
          * log
          *
-         * @access public
+         * @access  public
          * @static
-         * @param  Request $request
-         * @param  array $error
-         * @param  array $trace
-         * @return void
+         * @param   Request $request
+         * @param   array $error
+         * @param   array $trace
+         * @return  void
          */
         public static function log(
             \Turtle\Request $request,
