@@ -14,8 +14,8 @@
         /**
          * _blocks
          *
-         * @var     array
          * @access  protected
+         * @var     array
          * @static
          */
         protected static $_blocks = array();
@@ -23,8 +23,8 @@
         /**
          * _errorMessage
          *
-         * @var     string
          * @access  protected
+         * @var     string
          * @static
          */
         protected static $_errorMessage;
@@ -35,8 +35,8 @@
          * Maximum number of lines to show before and after a specific line
          * number (eg. where an error or stacktrace-call occured).
          *
-         * @var     integer
          * @access  protected
+         * @var     int
          * @static
          */
         protected static $_maxNumberOfLines = 10;
@@ -68,7 +68,7 @@
          * @access  protected
          * @static
          * @param   string $path
-         * @param   integer $line
+         * @param   int $line
          * @param   string $functionName
          * @return  void
          */
