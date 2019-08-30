@@ -33,7 +33,7 @@
          * _maxNumberOfLines
          * 
          * Maximum number of lines to show before and after a specific line
-         * number (eg. where an error or stacktrace-call occured).
+         * number (eg. where an error or stacktrace-call occurred).
          *
          * @access  protected
          * @var     int
