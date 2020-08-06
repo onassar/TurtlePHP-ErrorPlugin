@@ -25,14 +25,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <style type="text/css">
 <?php
-    $file = file_get_contents('assets/bootstrap-combined.min.css', true);
-    echo $file;
+    $content = file_get_contents('assets/bootstrap-combined.min.css', true);
+    echo $content;
 ?>
         </style>
         <style type="text/css">
 <?php
-    $file = file_get_contents('assets/prettify.css', true);
-//     echo $file;
+    $content = file_get_contents('assets/prettify.css', true);
+//     echo $content;
 ?>
         </style>
         <style type="text/css">
@@ -175,12 +175,12 @@
         </div>
         <script type="text/javascript">
 <?php
-    $file = file_get_contents('assets/prettify.js', true);
-    echo $file;
+    $content = file_get_contents('assets/prettify.js', true);
+    echo $content;
 ?>
 <?php
-    $file = file_get_contents('assets/jQuery.min.js', true);
-    echo $file;
+    $content = file_get_contents('assets/jQuery.min.js', true);
+    echo $content;
 ?>
         </script>
         <script type="text/javascript">

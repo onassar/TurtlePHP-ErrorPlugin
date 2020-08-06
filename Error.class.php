@@ -5,11 +5,14 @@
 
     /**
      * Error
+     * 
+     * Error plugin for TurtlePHP.
      *
      * @author  Oliver Nassar <onassar@gmail.com>
      * @abstract
+     * @extends Base
      */
-    abstract class Error
+    abstract class Error extends Base
     {
         /**
          * _blocks
@@ -21,46 +24,31 @@
         protected static $_blocks = array();
 
         /**
-         * _errorMessage
+         * _configPath
          *
          * @access  protected
          * @var     string
          * @static
          */
-        protected static $_errorMessage;
+        protected static $_configPath = 'config.default.inc.php';
 
         /**
-         * _maxNumberOfLines
-         * 
-         * Maximum number of lines to show before and after a specific line
-         * number (eg. where an error or stacktrace-call occurred).
+         * _errorMessage
          *
          * @access  protected
-         * @var     int
+         * @var     null|string (default: null)
          * @static
          */
-        protected static $_maxNumberOfLines = 10;
+        protected static $_errorMessage = null;
 
         /**
-         * init
+         * _initiated
          *
-         * @access  public
+         * @access  protected
+         * @var     bool
          * @static
-         * @return  void
          */
-        public static function init()
-        {
-            // clear previous hooks; add them
-            \Turtle\Application::clearHooks('error');
-            \Turtle\Application::addHook(
-                'error',
-                array('\Plugin\Error', 'log')
-            );
-            \Turtle\Application::addHook(
-                'error',
-                array('\Plugin\Error', 'draw')
-            );
-        }
+        protected static $_initiated = false;
 
         /**
          * _addBlock
@@ -72,7 +60,7 @@
          * @param   string $functionName
          * @return  void
          */
-        protected static function _addBlock($path, $line, $functionName)
+        protected static function _addBlock(string $path, int $line, string $functionName): void
         {
             // setup the block
             $block = array(
@@ -87,42 +75,135 @@
             $data = file_get_contents($path);
             $data = explode("\n", $data);
 
-            // slice it up to get at most <self::$_maxNumberOfLines> lines before and after error-line
-            $start = max(0, $line - self::$_maxNumberOfLines);
-            $end = min($line + 1 + self::$_maxNumberOfLines, (self::$_maxNumberOfLines * 2) +1);
+            // slice it up to get at most <static::$_maxNumberOfLines> lines before and after error-line
+            $configData = static::_getConfigData();
+            $maxNumberOfLines = $configData['maxNumberOfLines'];
+            $start = max(0, $line - $maxNumberOfLines);
+            $end = min($line + 1 + $maxNumberOfLines, ($maxNumberOfLines * 2) +1);
             $lines = array_slice($data, $start, $end);
 
             // encode and include starting-line
-            $encoded = self::_encode($lines);
+            $encoded = static::_encode($lines);
             $block['output'] = "\n" . implode("\n", $encoded);
             if (preg_match('/(\n){1}$/', $block['output'])) {
                 $block['output'] .= "\n";
             }
 
             // set which line the output is starting on, relative to the file
-            $block['start'] = max(1, $line - self::$_maxNumberOfLines + 1);
+            $block['start'] = max(1, $line - $maxNumberOfLines + 1);
 
             // push to local storage
-            array_push(self::$_blocks, $block);
+            array_push(static::$_blocks, $block);
         }
 
         /**
-         * _encode
+         * _addErrorDrawHook
          * 
          * @access  protected
          * @static
-         * @param   mixed $mixed
+         * @return  void
+         */
+        protected static function _addErrorDrawHook(): void
+        {
+            $hook = 'error';
+            $callback = array('\Plugin\Error', 'draw');
+            \Turtle\Application::addHook($hook, $callback);
+        }
+
+        /**
+         * _addErrorHooks
+         * 
+         * @note    Order matters
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _addErrorHooks(): void
+        {
+            static::_addErrorLogHook();
+            static::_addErrorDrawHook();
+        }
+
+        /**
+         * _addErrorLogHook
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _addErrorLogHook(): void
+        {
+            $hook = 'error';
+            $callback = array('\Plugin\Error', 'log');
+            \Turtle\Application::addHook($hook, $callback);
+        }
+
+        /**
+         * _checkDependencies
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _checkDependencies(): void
+        {
+            static::_checkConfigPluginDependency();
+        }
+
+        /**
+         * _clearErrorHook
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _clearErrorHook(): void
+        {
+            $hook = 'error';
+            \Turtle\Application::clearHooks($hook);
+        }
+
+        /**
+         * _getLoggingLines
+         * 
+         * @access  protected
+         * @static
+         * @param   array $metadata
          * @return  array
          */
-        protected static function _encode($mixed)
+        protected static function _getLoggingLines(array $metadata): array
         {
-            if (is_array($mixed) === true) {
-                foreach ($mixed as $key => $value) {
-                    $mixed[$key] = self::_encode($value);
-                }
-                return $mixed;
-            }
-            return htmlentities($mixed, ENT_QUOTES, 'UTF-8');
+            $padLength = 11;
+            $lines = array();
+            $leading = str_pad('Message:', $padLength, ' ');
+            $value = $metadata[1];
+            array_push($lines, ($leading) . ($value));
+            $leading = str_pad('File:', $padLength, ' ');
+            $value = $metadata[2];
+            array_push($lines, ($leading) . ($value));
+            $leading = str_pad('Line:', $padLength, ' ');
+            $value = $metadata[3];
+            array_push($lines, ($leading) . ($value));
+            $leading = str_pad('Client:', $padLength, ' ');
+            $value = IP;
+            array_push($lines, ($leading) . ($value));
+            $leading = str_pad('URI:', $padLength, ' ');
+            $value = static::_getLoggingURI();
+            array_push($lines, ($leading) . ($value));
+            return $lines;
+        }
+
+        /**
+         * _getLoggingURI
+         * 
+         * @access  protected
+         * @static
+         * @return  null|string
+         */
+        protected static function _getLoggingURI(): ?string
+        {
+            $uri = $_SERVER['REQUEST_URI'] ?? $_SERVER['SCRIPT_NAME'] ?? null;
+            return $uri;
         }
 
         /**
@@ -132,12 +213,12 @@
          * @static
          * @return  string
          */
-        protected static function _render()
+        protected static function _render(): string
         {
             // buffer handling
             ob_start();
-            $blocks = self::$_blocks;
-            $errorMessage = self::$_errorMessage;
+            $blocks = static::$_blocks;
+            $errorMessage = static::$_errorMessage;
 
             // render view
             include 'render.inc.php';
@@ -153,21 +234,18 @@
          *
          * @access  public
          * @static
-         * @param   Request $request
-         * @param   array $error
+         * @param   \Turtle\Request $request
+         * @param   array $metadata
          * @param   array $trace
          * @return  void
          */
-        public static function draw(
-            \Turtle\Request $request,
-            array $error,
-            array $backtrace
-        ) {
+        public static function draw(\Turtle\Request $request, array $metadata, array $trace): void
+        {
             // error message (for view)
-            self::$_errorMessage = $error[1];
+            static::$_errorMessage = $metadata[1];
 
             // filter calls to clean out function calls that aren't useful
-            $functionCalls = $backtrace;
+            $functionCalls = $trace;
             $functionNames = array();
             array_shift($functionCalls);
             foreach ($functionCalls as $x => $call) {
@@ -180,13 +258,13 @@
             }
 
             // define blocks for output
-            foreach ($backtrace as $x => $marker) {
+            foreach ($trace as $x => $marker) {
                 if (isset($marker['file'])) {
                     $functionName = false;
                     if (count($functionNames) > 0) {
                         $functionName = array_shift($functionNames);
                     }
-                    self::_addBlock(
+                    static::_addBlock(
                         $marker['file'],
                         ((int) $marker['line'] - 1),
                         $functionName
@@ -195,9 +273,28 @@
             }
 
             // render the error view
-            $response = self::_render();
-            echo $response;
+            $response = static::_render();
+            $request->setResponse($response);
+            // echo $response;
             exit(0);
+        }
+
+        /**
+         * init
+         * 
+         * @access  public
+         * @static
+         * @return  bool
+         */
+        public static function init(): bool
+        {
+            if (static::$_initiated === true) {
+                return false;
+            }
+            parent::init();
+            static::_clearErrorHook();
+            static::_addErrorHooks();
+            return true;
         }
 
         /**
@@ -205,27 +302,22 @@
          *
          * @access  public
          * @static
-         * @param   Request $request
-         * @param   array $error
+         * @param   \Turtle\Request $request
+         * @param   array $metadata
          * @param   array $trace
          * @return  void
          */
-        public static function log(
-            \Turtle\Request $request,
-            array $error,
-            array $trace
-        ) {
-            $uri = $_SERVER['SCRIPT_NAME'];
-            if (isset($_SERVER['REQUEST_URI']) === true) {
-                $uri = $_SERVER['REQUEST_URI'];
-            }
-            $message = array(
-                'Message:   ' . ($error[1]),
-                'File:      ' . ($error[2]),
-                'Line:      ' . ($error[3]),
-                'Client:    ' . (IP),
-                'URI:       ' . ($uri)
-            );
-            error_log("\n" . implode("\n", $message));
+        public static function log(\Turtle\Request $request, array $metadata, array $trace)
+        {
+            $lines = static::_getLoggingLines($metadata);
+            $message = implode("\n", $lines);
+            $message = "\n" . ($message);
+            error_log($message);
         }
     }
+
+    // Config path loading
+    $info = pathinfo(__DIR__);
+    $parent = ($info['dirname']) . '/' . ($info['basename']);
+    $configPath = ($parent) . '/config.inc.php';
+    \Plugin\Error::setConfigPath($configPath);
