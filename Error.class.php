@@ -16,7 +16,7 @@
     {
         /**
          * _blocks
-         *
+         * 
          * @access  protected
          * @var     array
          * @static
@@ -25,7 +25,7 @@
 
         /**
          * _configPath
-         *
+         * 
          * @access  protected
          * @var     string
          * @static
@@ -34,7 +34,7 @@
 
         /**
          * _errorMessage
-         *
+         * 
          * @access  protected
          * @var     null|string (default: null)
          * @static
@@ -43,7 +43,7 @@
 
         /**
          * _initiated
-         *
+         * 
          * @access  protected
          * @var     bool
          * @static
@@ -208,7 +208,7 @@
 
         /**
          * _render
-         *
+         * 
          * @access  protected
          * @static
          * @return  string
@@ -231,7 +231,7 @@
 
         /**
          * draw
-         *
+         * 
          * @access  public
          * @static
          * @param   \Turtle\Request $request
@@ -299,7 +299,7 @@
 
         /**
          * log
-         *
+         * 
          * @access  public
          * @static
          * @param   \Turtle\Request $request
