@@ -24,6 +24,33 @@
      */
 
     /**
+     * __addCopyEventListener
+     * 
+     * @access  private
+     * @return  void
+     */
+    function __addCopyEventListener() {
+        var $anchors = document.querySelectorAll('a.copy');
+        $anchors.forEach(function($anchor) {
+            var eventName = 'click',
+                callback = __handleCopyClickEvent;
+            $anchor.addEventListener(eventName, callback, false);
+        })
+    }
+
+    /**
+     * __addKeyPressEventListener
+     * 
+     * @access  private
+     * @return  void
+     */
+    function __addKeyPressEventListener() {
+        var eventName = 'keypress',
+            callback = __handleKeyPressEvent;
+        document.body.addEventListener(eventName, callback, false);
+    }
+
+    /**
      * __copyToClipboard
      * 
      * @access  private
@@ -31,36 +58,35 @@
      * @return  void
      */
     function __copyToClipboard(content) {
-        var $element = jQuery('<input type="text" />'),
-            element = $element[0];
-        $(document.body).append($element);
-        $element.val(content);
-        element.select();
-        document.execCommand('copy');
-        element.blur();
-        $element.remove();
+        var $input = document.createElement('input');
+        $input.type = 'text';
+        $input.value = content;
+        document.body.appendChild($input);
+        $input.select();
+        document.execCommand('Copy');
+        document.body.removeChild($input);
     }
 
     /**
-     * _getBlockFlagElement
+     * __getBlockFlagElement
      * 
      * @access  private
      * @param   HTMLElement $block
      * @return  HTMLElement
      */
-    function _getBlockFlagElement($block) {
+    function __getBlockFlagElement($block) {
         var $flag = $block.querySelector('div.flag');
         return $flag;
     }
 
     /**
-     * _getBlockHighlightIndex
+     * __getBlockHighlightIndex
      * 
      * @access  private
      * @param   HTMLElement $block
      * @return  Number
      */
-    function _getBlockHighlightIndex($block) {
+    function __getBlockHighlightIndex($block) {
         var highlightIndex = $block.getAttribute('data-highlight-index');
         highlightIndex = parseInt(highlightIndex, 10);
         return highlightIndex;
@@ -74,11 +100,106 @@
      * @return  HTMLElement
      */
     function __getBlockListItemHighlighted($block) {
-        var highlightIndex = _getBlockHighlightIndex($block),
+        var highlightIndex = __getBlockHighlightIndex($block),
             selector = 'li:nth-child(' + (highlightIndex + 1) + ')',
             $listItem = $block.querySelector(selector);
         return $listItem;
     }
+
+    /**
+     * __getFlagOffsetTopValue
+     * 
+     * @access  private
+     * @param   HTMLElement $block
+     * @return  Number
+     */
+    function __getFlagOffsetTopValue($block) {
+        var $listItem = __getBlockListItemHighlighted($block),
+            offsetTop = $listItem.offsetTop;
+        return offsetTop;
+    }
+
+    /**
+     * __getFlagTopPosition
+     * 
+     * @access  private
+     * @param   HTMLElement $block
+     * @return  String
+     */
+    function __getFlagTopPosition($block) {
+        var offsetTop = __getFlagOffsetTopValue($block),
+            $listItem = __getBlockListItemHighlighted($block),
+            listItemHeight = $listItem.offsetHeight,
+            $flag = __getBlockFlagElement($block),
+            flagHeight = $flag.offsetHeight,
+            topPosition = (offsetTop + (listItemHeight - flagHeight) / 2) + 'px';
+        return topPosition;
+    }
+
+    /**
+     * __getViewportElements
+     * 
+     * @access  private
+     * @param   String selector
+     * @return  NodeList
+     */
+    function __getViewportElements(selector) {
+        var $elements = document.querySelectorAll(selector),
+            $filtered = Array.from($elements).filter(function($element) {
+                return __inViewport($element);
+            });
+        return $filtered;
+    }
+
+    /**
+     * __handleCopyClickEvent
+     * 
+     * @access  private
+     * @param   Object event
+     * @return  void
+     */
+    function __handleCopyClickEvent(event) {
+        event.preventDefault();
+        var copy = this.getAttribute('data-copy-value');
+        __copyToClipboard(copy);
+    }
+
+    /**
+     * __handleKeyPressEvent
+     * 
+     * @access  private
+     * @param   Object event
+     * @return  void
+     */
+    function __handleKeyPressEvent(event) {
+        if (event.key === 'c') {
+            var selector = 'a.copy',
+                $anchors = __getViewportElements(selector);
+            if ($anchors.length > 0) {
+                var $anchor = $anchors[0],
+                    copy = $anchor.getAttribute('data-copy-value');
+                __copyToClipboard(copy);
+            }
+        }
+    }
+
+    /**
+     * __inViewport
+     * 
+     * @link    https://vanillajstoolkit.com/helpers/isinviewport/
+     * @access  private
+     * @param   HTMLElement $element
+     * @return  Boolean
+     */
+    function __inViewport($element) {
+        var distance = $element.getBoundingClientRect();
+        return (
+            distance.top >= 0 &&
+            distance.left >= 0 &&
+            distance.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            distance.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    };
 
     /**
      * __positionBlockFlag
@@ -88,12 +209,10 @@
      * @return  void
      */
     function __positionBlockFlag($block) {
-        var $flag = _getBlockFlagElement($block),
-            $listItem = __getBlockListItemHighlighted($block)
-            listItemPosition = $listItem.getBoundingClientRect(),
-            bodyPosition = document.body.getBoundingClientRect(),
-            blockPosition = $block.getBoundingClientRect();
-        $flag.style.top = (listItemPosition.y - bodyPosition.y - blockPosition.y - 6) + 'px';
+        var $flag = __getBlockFlagElement($block),
+            $listItem = __getBlockListItemHighlighted($block),
+            top = __getFlagTopPosition($block);
+        $flag.style.top = top;
     }
 
     /**
@@ -120,34 +239,9 @@
     }
 
     // Construct
+    __addCopyEventListener();
+    __addKeyPressEventListener();
     __prettyPrint();
     __positionBlockFlags();
     return true;
 })();
-
-            // var blocks = $('.block');
-            // jQuery.each(blocks, function(index, block) {
-            //     var focusingLineNumber = $(block).attr('data-line-number'),
-            //         first = $(block).find('li[value]'),
-            //         lines = first.nextAll(),
-            //         previous = first.val();
-
-            //     first.attr('data-line', first.val());
-            //     jQuery.each(lines, function(index, line) {
-            //         $(line).attr('data-line', previous + 1);
-            //         ++previous;
-            //     });
-
-            //     // selected line
-            //     var selected = $(block).find('li[data-line="' + (focusingLineNumber) + '"]');
-            //     selected.addClass('focus');
-
-            //     // create a hovered-focus element for the errored-line
-            //     var hovered = $('<div class="hovered"></div>'),
-            //         position = selected.position();
-            //     hovered.css({
-            //         left: position.left - 75,
-            //         top: position.top + 40
-            //     });
-            //     $(block).append(hovered);
-            // });

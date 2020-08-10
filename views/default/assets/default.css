@@ -29,13 +29,34 @@ div.container div.block {
     padding-top: 10px;
 }
 div.container div.block h3 {
-    margin-top: 0;
+    margin: 0 0 0 0;
     padding: 0 0 0 0;
+    height: 20px;
+}
+div.container div.block h3 div.copy {
+    float: left;
+    height: 20px;
+    line-height: 20px;
     font-size: 15px;
     font-weight: normal;
+}
+div.container div.block h3 a {
+    display: block;
+    float: left;
+    height: 20px;
     line-height: 20px;
 }
+div.container div.block h3 a img {
+    display: block;
+    margin: 0 0 0 8px;
+    height: 100%;
+    transition: transform 100ms linear;
+}
+div.container div.block h3 a:hover img {
+    transform: scale(1.2);
+}
 div.container div.block div.content {
+    clear: left;
     position: relative;
 }
 div.container div.block div.content div.badges {
