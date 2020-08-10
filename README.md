@@ -11,4 +11,4 @@ Plugin\Error::init();
 ```
 
 ### Sample UI
-![Sample Error](http://i.imgur.com/qaRZ6.png)
+![Sample Error](https://i.imgur.com/yIVT0ih.png)
