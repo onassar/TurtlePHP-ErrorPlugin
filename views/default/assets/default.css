@@ -1,0 +1,133 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #333333;
+}
+div.container {
+    width: 100%;
+    max-width: 770px;
+    padding: 40px 0 0 0;
+    margin: 0 auto 0 auto;
+}
+div.container h1 {
+    font-size: 24.5px;
+    border-bottom: 1px solid #eeeeee;
+    font-weight: normal;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    line-height: 40px;
+}
+div.container h2 {
+    font-weight: normal;
+    line-height: 20px;
+    border: solid #eeeeee;
+    border-width: 0 0 1px 0;
+    padding: 10px 0 10px 0;
+    margin: 20px 0 10px 0;
+    font-size: 20px;
+}
+div.container div.block {
+    padding-top: 10px;
+}
+div.container div.block h3 {
+    margin-top: 0;
+    padding: 0 0 0 0;
+    font-size: 15px;
+    font-weight: normal;
+    line-height: 20px;
+}
+div.container div.block div.content {
+    position: relative;
+}
+div.container div.block div.content div.badges {
+    position: absolute;
+    width: 400px;
+    left: -408px;
+    top: 0;
+    /*top: 6px;*/
+}
+div.container div.block div.content div.badges div.badge {
+    float: right;
+    clear: right;
+    border-radius: 100px 100px 100px 100px;
+    color: #ffffff;
+    padding: 0 12px 0 12px;
+    font-size: 12px;
+    font-weight: 900;
+    margin: 0 0 4px 0;
+    height: 25px;
+    line-height: 25px;
+}
+div.container div.block div.content div.badges div.badge.lineNumber {
+    background-color: #333333;
+}
+div.container div.block div.content div.badges div.badge.functionName {
+    background-color: #3a87ad;
+}
+div.container div.block div.content div.flag {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: #468847;
+    border-radius: 4px 4px 4px 4px;
+    /*margin: 4px 0 0 0;*/
+    left: -20px;
+}
+div.container h1 + div.block div.content div.flag {
+    background-color: #B94A48;
+}
+div.container div.block div.content pre {
+    border-radius: 4px 4px 4px 4px;
+    overflow: auto;
+    font-size: 0.8em;
+}
+div.container div.block[data-highlight-index="0"] div.content pre ol li:nth-child(1),
+div.container div.block[data-highlight-index="1"] div.content pre ol li:nth-child(2),
+div.container div.block[data-highlight-index="2"] div.content pre ol li:nth-child(3),
+div.container div.block[data-highlight-index="3"] div.content pre ol li:nth-child(4),
+div.container div.block[data-highlight-index="4"] div.content pre ol li:nth-child(5),
+div.container div.block[data-highlight-index="5"] div.content pre ol li:nth-child(6),
+div.container div.block[data-highlight-index="6"] div.content pre ol li:nth-child(7),
+div.container div.block[data-highlight-index="7"] div.content pre ol li:nth-child(8),
+div.container div.block[data-highlight-index="8"] div.content pre ol li:nth-child(9),
+div.container div.block[data-highlight-index="9"] div.content pre ol li:nth-child(10),
+div.container div.block[data-highlight-index="10"] div.content pre ol li:nth-child(11),
+div.container div.block[data-highlight-index="11"] div.content pre ol li:nth-child(12),
+div.container div.block[data-highlight-index="12"] div.content pre ol li:nth-child(13),
+div.container div.block[data-highlight-index="13"] div.content pre ol li:nth-child(14),
+div.container div.block[data-highlight-index="14"] div.content pre ol li:nth-child(15) {
+    outline: 1px dashed #cccccc;
+}
+div.container footer {
+    text-align: right;
+    font-size: 13px;
+    border-top: 1px solid #eeeeee;
+    margin-top: 15px;
+    padding-top: 20px;
+    padding-bottom: 40px;
+    color: #777777;
+}
+div.container footer span {
+    padding: 0 0 0 24px;
+}
+
+/**
+ * Skins
+ * 
+ */
+body.skin-desert div.container div.block div.content pre {
+    border: 1px solid #000000;
+}
+body.skin-desert div.container div.block div.content pre ol {
+    background-color: #444444;
+}
+body.skin-desert div.container div.block div.content pre ol li {
+    background-color: #333333;
+    margin: 0 0 0 14px;
+    list-style-type: decimal;
+    line-height: 20px;
+    border-left: 1px solid #222222;
+}
+body.skin-desert div.container div.block div.content pre ol li:before {
+}
+body.skin-desert div.container div.block div.content pre ol:first-child {
+}

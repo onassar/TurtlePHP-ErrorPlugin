@@ -18,7 +18,7 @@
          * _blocks
          * 
          * @access  protected
-         * @var     array
+         * @var     array (default: array())
          * @static
          */
         protected static $_blocks = array();
@@ -27,7 +27,7 @@
          * _configPath
          * 
          * @access  protected
-         * @var     string
+         * @var     string (default: 'config.default.inc.php')
          * @static
          */
         protected static $_configPath = 'config.default.inc.php';
@@ -45,7 +45,7 @@
          * _initiated
          * 
          * @access  protected
-         * @var     bool
+         * @var     bool (defualt: false)
          * @static
          */
         protected static $_initiated = false;
@@ -105,9 +105,9 @@
          */
         protected static function _addErrorDrawHook(): void
         {
-            $hook = 'error';
+            $hookKey = 'error';
             $callback = array('\Plugin\Error', 'draw');
-            \Turtle\Application::addHook($hook, $callback);
+            \Turtle\Application::addHook($hookKey, $callback);
         }
 
         /**
@@ -133,9 +133,9 @@
          */
         protected static function _addErrorLogHook(): void
         {
-            $hook = 'error';
+            $hookKey = 'error';
             $callback = array('\Plugin\Error', 'log');
-            \Turtle\Application::addHook($hook, $callback);
+            \Turtle\Application::addHook($hookKey, $callback);
         }
 
         /**
@@ -159,8 +159,8 @@
          */
         protected static function _clearErrorHook(): void
         {
-            $hook = 'error';
-            \Turtle\Application::clearHooks($hook);
+            $hookKey = 'error';
+            \Turtle\Application::clearHooks($hookKey);
         }
 
         /**
@@ -168,23 +168,23 @@
          * 
          * @access  protected
          * @static
-         * @param   array $metadata
+         * @param   \Throwable $throwable
          * @return  array
          */
-        protected static function _getLoggingLines(array $metadata): array
+        protected static function _getLoggingLines(\Throwable $throwable): array
         {
             $padLength = 11;
             $lines = array();
             $leading = str_pad('Message:', $padLength, ' ');
-            $value = $metadata[1];
+            $value = $throwable->getMessage();
             array_push($lines, ($leading) . ($value));
             $leading = str_pad('File:', $padLength, ' ');
-            $value = $metadata[2];
+            $value = $throwable->getFile();
             array_push($lines, ($leading) . ($value));
             $leading = str_pad('Line:', $padLength, ' ');
-            $value = $metadata[3];
+            $value = $throwable->getLine();
             array_push($lines, ($leading) . ($value));
-            $leading = str_pad('Client:', $padLength, ' ');
+            $leading = str_pad('IP:', $padLength, ' ');
             $value = IP;
             array_push($lines, ($leading) . ($value));
             $leading = str_pad('URI:', $padLength, ' ');
@@ -207,48 +207,41 @@
         }
 
         /**
-         * _render
+         * _renderView
          * 
          * @access  protected
          * @static
          * @return  string
          */
-        protected static function _render(): string
+        protected static function _renderView(): string
         {
-            // buffer handling
-            ob_start();
+            $configData = static::_getConfigData();
+            $template = $configData['template'];
+            $path = (__DIR__) . '/views/' . ($template) . '/render.inc.php';
+            $skin = $configData['skin'];
             $blocks = static::$_blocks;
             $errorMessage = static::$_errorMessage;
-
-            // render view
-            include 'render.inc.php';
-            $_response = ob_get_contents();
-            ob_end_clean();
-
-            // return captured response
-            return $_response;
+            $vars = compact('blocks', 'errorMessage', 'skin');
+            $response = static::_renderPath($path, $vars);
+            return $response;
         }
 
         /**
-         * draw
+         * _setBlocks
          * 
-         * @access  public
+         * @access  protected
          * @static
-         * @param   \Turtle\Request $request
-         * @param   array $metadata
          * @param   array $trace
          * @return  void
          */
-        public static function draw(\Turtle\Request $request, array $metadata, array $trace): void
+        protected static function _setBlocks(array $trace): void
         {
-            // error message (for view)
-            static::$_errorMessage = $metadata[1];
-
             // filter calls to clean out function calls that aren't useful
             $functionCalls = $trace;
+el(pr($trace, true));
             $functionNames = array();
             array_shift($functionCalls);
-            foreach ($functionCalls as $x => $call) {
+            foreach ($functionCalls as $call) {
                 if (isset($call['function'])) {
                     if ($call['function'] === 'call_user_func_array') {
                         continue;
@@ -258,24 +251,51 @@
             }
 
             // define blocks for output
-            foreach ($trace as $x => $marker) {
-                if (isset($marker['file'])) {
+            foreach ($trace as $traceFrame) {
+                if (isset($traceFrame['file'])) {
                     $functionName = false;
                     if (count($functionNames) > 0) {
                         $functionName = array_shift($functionNames);
                     }
                     static::_addBlock(
-                        $marker['file'],
-                        ((int) $marker['line'] - 1),
+                        $traceFrame['file'],
+                        ((int) $traceFrame['line'] - 1),
                         $functionName
                     );
                 }
             }
+        }
 
-            // render the error view
-            $response = static::_render();
+        /**
+         * _setErrorMessage
+         * 
+         * @access  protected
+         * @static
+         * @param   \Throwable $throwable
+         * @return  void
+         */
+        protected static function _setErrorMessage(\Throwable $throwable): void
+        {
+            $message = $throwable->getMessage();
+            static::$_errorMessage = $message;
+        }
+
+        /**
+         * draw
+         * 
+         * @access  public
+         * @static
+         * @param   \Turtle\Request $request
+         * @param   \Throwable $throwable
+         * @param   array $trace
+         * @return  void
+         */
+        public static function draw(\Turtle\Request $request, \Throwable $throwable, array $trace): void
+        {
+            static::_setBlocks($trace);
+            static::_setErrorMessage($throwable);
+            $response = static::_renderView();
             $request->setResponse($response);
-            // echo $response;
             exit(0);
         }
 
@@ -303,13 +323,13 @@
          * @access  public
          * @static
          * @param   \Turtle\Request $request
-         * @param   array $metadata
+         * @param   \Throwable $throwable
          * @param   array $trace
          * @return  void
          */
-        public static function log(\Turtle\Request $request, array $metadata, array $trace)
+        public static function log(\Turtle\Request $request, \Throwable $throwable, array $trace): void
         {
-            $lines = static::_getLoggingLines($metadata);
+            $lines = static::_getLoggingLines($throwable);
             $message = implode("\n", $lines);
             $message = "\n" . ($message);
             error_log($message);

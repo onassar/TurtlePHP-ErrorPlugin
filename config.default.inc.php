@@ -11,7 +11,9 @@
      * 
      */
     $maxNumberOfLines = 10;
-    $pluginConfigData = compact('maxNumberOfLines');
+    $skin = 'sunburst';
+    $template = 'archived';
+    $pluginConfigData = compact('maxNumberOfLines', 'skin', 'template');
 
     /**
      * Storage

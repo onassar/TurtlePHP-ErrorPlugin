@@ -30,12 +30,6 @@
 ?>
         </style>
         <style type="text/css">
-<?php
-    $content = file_get_contents('assets/prettify.css', true);
-//     echo $content;
-?>
-        </style>
-        <style type="text/css">
             .container {
                 padding: 40px 0 0;
             }
