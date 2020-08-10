@@ -70,6 +70,7 @@
                         $pieces = explode('TurtlePHP/', $copyValue);
                         $copyValue = array_pop($pieces);
                         $copyValue = 'TurtlePHP/' . ($copyValue);
+                        $copyValue = ($copyValue) . ':' . ($block['line']);
                     ?>
                     <a href="#" class="icon copy" data-copy-value="<?= ($copyValue) ?>">
                         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAAA7UlEQVRoge2ZQQ6CMBBFn8at8QK65uwSEtcuvJGaUA+gC1xo0wgttR90XsJmQsp/NHSSAQzDCLEDGsAB98JXlvAXQfBsAo0wfLTAIlBzwDp2oYyEMkXd7L+FqAVLs1QHGIsJqEkVKNknHHAAqqHh+o41VZ+4Pp89WkDZJ2o/TMoxquwTDti8FlIESveJj8/721NoMpiAGhNQYwJqTECNCagxATUmoMYE1MxeYBWoTXoW6jP7HTABNaFvoI8b74OtLL+FBtL6hZQdOGUIksoxxyIV3aC19Fz0DGxzCEA3Ja7ptvTbwVtgnzO8YfwSD6GzArx9pr2cAAAAAElFTkSuQmCC"/>
