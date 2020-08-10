@@ -90,7 +90,7 @@
 <?php
     endforeach;
 ?>
-            <footer class="span8 offset2">
+            <footer>
                 <span><?= date('D, d M o G:i:s T') ?></span>
                 <span><?= (IP) ?></span>
                 <span><?= ($host) ?></span>

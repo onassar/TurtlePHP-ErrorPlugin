@@ -30,7 +30,8 @@
      * @return  void
      */
     function __addCopyEventListener() {
-        var $anchors = document.querySelectorAll('a.copy');
+        var selector = 'a.copy',
+            $anchors = document.querySelectorAll(selector);
         $anchors.forEach(function($anchor) {
             var eventName = 'click',
                 callback = __handleCopyClickEvent;
@@ -273,7 +274,8 @@
      * @return  void
      */
     function __positionBlockFlags() {
-        var $blocks = document.querySelectorAll('div.block');
+        var selector = 'div.block',
+            $blocks = document.querySelectorAll(selector);
         $blocks.forEach(function($block, index) {
             __positionBlockFlag($block);
         });
