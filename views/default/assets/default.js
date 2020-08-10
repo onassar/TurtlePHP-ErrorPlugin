@@ -11,12 +11,12 @@
      */
 
     /**
-     * __allowRememberMe
+     * __animatingClassName
      * 
      * @access  private
-     * @var     Boolean (default: false)
+     * @var     String (default: 'flip')
      */
-    var __allowRememberMe = false;
+    var __animatingClassName = 'flip';
 
     /**
      * Methods
@@ -48,6 +48,55 @@
         var eventName = 'keypress',
             callback = __handleKeyPressEvent;
         document.body.addEventListener(eventName, callback, false);
+    }
+
+    /**
+     * __animateCSS
+     * 
+     * @link    https://animate.style/
+     * @see     https://caniuse.com/#search=classList
+     * @see     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
+     * @access  private
+     * @param   HTMLElement $element
+     * @param   String animation
+     * @param   String prefix
+     * @return  Promise
+     */
+    function __animateCSS($element, animation, prefix) {
+        var promise = new Promise(
+            function(resolve, reject) {
+                var animationName = (prefix) + (animation);
+                $element.classList.add((prefix) + 'animated');
+                $element.classList.add(animationName);
+                function handleAnimationEnd() {
+                    $element.classList.remove((prefix) + 'animated');
+                    $element.classList.remove(animationName);
+                    $element.removeEventListener(
+                        'animationend',
+                        handleAnimationEnd
+                    );
+                    resolve('Animation ended');
+                }
+                $element.addEventListener(
+                    'animationend',
+                    handleAnimationEnd
+                );
+            }
+        );
+        return promise;
+    }
+
+    /**
+     * __animateElement
+     * 
+     * @access  private
+     * @param   HTMLElement $element
+     * @return  void
+     */
+    function __animateElement($element) {
+        var animatingClassName = __animatingClassName,
+            prefix = 'animate__';
+        __animateCSS($element, animatingClassName, prefix);
     }
 
     /**
@@ -162,6 +211,7 @@
         event.preventDefault();
         var copy = this.getAttribute('data-copy-value');
         __copyToClipboard(copy);
+        __animateElement(this);
     }
 
     /**
@@ -179,6 +229,7 @@
                 var $anchor = $anchors[0],
                     copy = $anchor.getAttribute('data-copy-value');
                 __copyToClipboard(copy);
+                __animateElement($anchor);
             }
         }
     }

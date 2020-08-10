@@ -24,6 +24,13 @@
         </style>
         <style type="text/css">
 <?php
+    $path = 'assets/vendors/animate.css/v4.1.0/animate.min.css';
+    $content = file_get_contents($path, true);
+    echo $content;
+?>
+        </style>
+        <style type="text/css">
+<?php
     $path = 'assets/vendors/code-prettify/e006587b4a893f0281e9dc9a53001c7ed584d4e7/loader/skins/' . ($skin) . '.css';
     $content = file_get_contents($path, true);
     echo $content;
