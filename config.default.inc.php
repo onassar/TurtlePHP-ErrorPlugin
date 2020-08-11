@@ -1,12 +1,6 @@
 <?php
 
     /**
-     * Namespace
-     * 
-     */
-    namespace Plugin\Error;
-
-    /**
      * Plugin Config Data
      * 
      */
@@ -20,4 +14,4 @@
      * 
      */
     $key = 'TurtlePHP-ErrorPlugin';
-    \Plugin\Config::add($key, $pluginConfigData);
+    TurtlePHP\Plugin\Config::set($key, $pluginConfigData);

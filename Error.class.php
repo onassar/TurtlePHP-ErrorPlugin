@@ -1,7 +1,7 @@
 <?php
 
     // namespace
-    namespace Plugin;
+    namespace TurtlePHP\Plugin;
 
     /**
      * Error
@@ -76,8 +76,8 @@
         protected static function _addErrorDrawHook(): void
         {
             $hookKey = 'error';
-            $callback = array('\Plugin\Error', 'draw');
-            \Turtle\Application::addHook($hookKey, $callback);
+            $callback = array('\TurtlePHP\Plugin\Error', 'draw');
+            \TurtlePHP\Application::addHook($hookKey, $callback);
         }
 
         /**
@@ -104,8 +104,8 @@
         protected static function _addErrorLogHook(): void
         {
             $hookKey = 'error';
-            $callback = array('\Plugin\Error', 'log');
-            \Turtle\Application::addHook($hookKey, $callback);
+            $callback = array('\TurtlePHP\Plugin\Error', 'log');
+            \TurtlePHP\Application::addHook($hookKey, $callback);
         }
 
         /**
@@ -130,7 +130,7 @@
         protected static function _clearErrorHook(): void
         {
             $hookKey = 'error';
-            \Turtle\Application::clearHooks($hookKey);
+            \TurtlePHP\Application::clearHooks($hookKey);
         }
 
         /**
@@ -384,12 +384,12 @@
          * 
          * @access  public
          * @static
-         * @param   \Turtle\Request $request
+         * @param   \TurtlePHP\Request $request
          * @param   \Throwable $throwable
          * @param   array $trace
          * @return  void
          */
-        public static function draw(\Turtle\Request $request, \Throwable $throwable, array $trace): void
+        public static function draw(\TurtlePHP\Request $request, \Throwable $throwable, array $trace): void
         {
             static::_setBlocks($trace);
             static::_setErrorMessage($throwable);
@@ -421,12 +421,12 @@
          * 
          * @access  public
          * @static
-         * @param   \Turtle\Request $request
+         * @param   \TurtlePHP\Request $request
          * @param   \Throwable $throwable
          * @param   array $trace
          * @return  void
          */
-        public static function log(\Turtle\Request $request, \Throwable $throwable, array $trace): void
+        public static function log(\TurtlePHP\Request $request, \Throwable $throwable, array $trace): void
         {
             $lines = static::_getLoggingLines($throwable);
             $message = implode("\n", $lines);
@@ -439,4 +439,4 @@
     $info = pathinfo(__DIR__);
     $parent = ($info['dirname']) . '/' . ($info['basename']);
     $configPath = ($parent) . '/config.inc.php';
-    \Plugin\Error::setConfigPath($configPath);
+    \TurtlePHP\Plugin\Error::setConfigPath($configPath);
