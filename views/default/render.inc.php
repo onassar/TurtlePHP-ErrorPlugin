@@ -72,14 +72,14 @@
                         $copyValue = 'TurtlePHP/' . ($copyValue);
                         $copyValue = ($copyValue) . ':' . ($block['line']);
                     ?>
-                    <a href="#" class="icon copy" data-copy-value="<?= ($copyValue) ?>">
+                    <a href="#" class="icon copy" data-copy-value="<?= ($copyValue) ?>" title="Copy to clipboard">
                         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAAA7UlEQVRoge2ZQQ6CMBBFn8at8QK65uwSEtcuvJGaUA+gC1xo0wgttR90XsJmQsp/NHSSAQzDCLEDGsAB98JXlvAXQfBsAo0wfLTAIlBzwDp2oYyEMkXd7L+FqAVLs1QHGIsJqEkVKNknHHAAqqHh+o41VZ+4Pp89WkDZJ2o/TMoxquwTDti8FlIESveJj8/721NoMpiAGhNQYwJqTECNCagxATUmoMYE1MxeYBWoTXoW6jP7HTABNaFvoI8b74OtLL+FBtL6hZQdOGUIksoxxyIV3aC19Fz0DGxzCEA3Ja7ptvTbwVtgnzO8YfwSD6GzArx9pr2cAAAAAElFTkSuQmCC"/>
                     </a>
                 </h3>
                 <div class="content">
                     <div class="badges">
                         <div class="badge lineNumber">Line #<?= ($block['line']) ?></div>
-                        <?php if ($block['functionName'] !== false): ?>
+                        <?php if ($block['functionName'] !== null): ?>
                             <div class="badge functionName"><?= ($block['functionName']) ?></div>
                         <?php endif; ?>
                     </div>
