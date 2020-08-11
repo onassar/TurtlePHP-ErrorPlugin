@@ -338,7 +338,7 @@
         {
             $configData = static::_getConfigData();
             $template = $configData['template'];
-            $path = (__DIR__) . '/views/' . ($template) . '/render.inc.php';
+            $path = (__DIR__) . '/templates/' . ($template) . '/render.inc.php';
             $skin = $configData['skin'];
             $blocks = static::$_blocks;
             $errorMessage = static::$_errorMessage;
