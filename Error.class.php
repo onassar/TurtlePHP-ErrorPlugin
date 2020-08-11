@@ -55,44 +55,14 @@
          * 
          * @access  protected
          * @static
-         * @param   string $path
-         * @param   int $line
-         * @param   string $functionName
+         * @param   array $traceFrame
+         * @param   null|string $traceFunctionName
          * @return  void
          */
-        protected static function _addBlock(string $path, int $line, string $functionName): void
+        protected static function _addBlock(array $traceFrame, ?string $traceFunctionName): void
         {
-            // setup the block
-            $block = array(
-                'path' => $path,
-                'line' => $line + 1,
-                'functionName' => $functionName,
-                'output' => '',
-                'start' => 1
-            );
-
-            // grab data contents
-            $data = file_get_contents($path);
-            $data = explode("\n", $data);
-
-            // slice it up to get at most <static::$_maxNumberOfLines> lines before and after error-line
-            $configData = static::_getConfigData();
-            $maxNumberOfLines = $configData['maxNumberOfLines'];
-            $start = max(0, $line - $maxNumberOfLines);
-            $end = min($line + 1 + $maxNumberOfLines, ($maxNumberOfLines * 2) +1);
-            $lines = array_slice($data, $start, $end);
-
-            // encode and include starting-line
-            $encoded = static::_encode($lines);
-            $block['output'] = "\n" . implode("\n", $encoded);
-            if (preg_match('/(\n){1}$/', $block['output'])) {
-                $block['output'] .= "\n";
-            }
-
-            // set which line the output is starting on, relative to the file
-            $block['start'] = max(1, $line - $maxNumberOfLines + 1);
-
-            // push to local storage
+            $args = array($traceFrame, $traceFunctionName);
+            $block = static::_getBlockProperties(... $args);
             array_push(static::$_blocks, $block);
         }
 
@@ -164,6 +134,129 @@
         }
 
         /**
+         * _getBlockOutput
+         * 
+         * @access  protected
+         * @static
+         * @param   array $traceFrame
+         * @return  string
+         */
+        protected static function _getBlockOutput(array $traceFrame): string
+        {
+            // Get content lines
+            $args = array($traceFrame);
+            $slicedContentLines = static::_getBlockOutputSlicedContentLines(... $args);
+
+            // Encode lines and include leading newline
+            $encodedLines = static::_encode($slicedContentLines);
+            $output = "\n" . implode("\n", $encodedLines);
+
+            // Append a newline if the output reaches the end of the file
+            if (preg_match('/(\n){1}$/', $output) === 1) {
+                $output .= "\n";
+            }
+            return $output;
+        }
+
+        /**
+         * _getBlockOutputContentLines
+         * 
+         * @access  protected
+         * @static
+         * @param   array $traceFrame
+         * @return  array
+         */
+        protected static function _getBlockOutputContentLines(array $traceFrame): array
+        {
+            $path = $traceFrame['file'];
+            $content = file_get_contents($path);
+            $contentLines = explode("\n", $content);
+            return $contentLines;
+        }
+
+        /**
+         * _getBlockOutputSlicedContentLines
+         * 
+         * @access  protected
+         * @static
+         * @param   array $traceFrame
+         * @return  array
+         */
+        protected static function _getBlockOutputSlicedContentLines(array $traceFrame): array
+        {
+            $contentLines = static::_getBlockOutputContentLines($traceFrame);
+            $line = (int) $traceFrame['line'];
+            $configData = static::_getConfigData();
+            $maxNumberOfLines = $configData['maxNumberOfLines'];
+            $start = max(0, $line - $maxNumberOfLines - 1);
+            $end = min($line + $maxNumberOfLines, ($maxNumberOfLines * 2) + 1);
+            $slicedContentLines = array_slice($contentLines, $start, $end);
+            return $slicedContentLines;
+        }
+
+        /**
+         * _getBlockProperties
+         * 
+         * @access  protected
+         * @static
+         * @param   array $traceFrame
+         * @param   null|string $traceFunctionName
+         * @return  array
+         */
+        protected static function _getBlockProperties(array $traceFrame, ?string $traceFunctionName): array
+        {
+            $path = $traceFrame['file'];
+            $line = (int) $traceFrame['line'];
+            $functionName = $traceFunctionName;
+            $output = static::_getBlockOutput($traceFrame);
+            $start = static::_getBlockStart($traceFrame);
+            $args = array('path', 'line', 'functionName', 'output', 'start');
+            $properties = compact(... $args);
+            return $properties;
+        }
+
+        /**
+         * _getBlockStart
+         * 
+         * Returns the line that the trace frame should start on (based on the
+         * config setting related to how many lines to show).
+         * 
+         * @access  protected
+         * @static
+         * @param   array $traceFrame
+         * @return  int
+         */
+        protected static function _getBlockStart(array $traceFrame): int
+        {
+            $line = (int) $traceFrame['line'];
+            $configData = static::_getConfigData();
+            $maxNumberOfLines = $configData['maxNumberOfLines'];
+            $start = max(1, $line - $maxNumberOfLines);
+            return $start;
+        }
+
+        /**
+         * _getFileBasedTraceFrames
+         * 
+         * @access  protected
+         * @static
+         * @param   array $trace
+         * @return  array
+         */
+        protected static function _getFileBasedTraceFrames(array $trace): array
+        {
+            $traceFrames = array();
+            foreach ($trace as $traceFrame) {
+                $traceFrameFile = $traceFrame['file'] ?? null;
+                if ($traceFrameFile === null) {
+                    continue;
+                }
+                array_push($traceFrames, $traceFrame);
+            }
+            return $traceFrames;
+        }
+
+        /**
          * _getLoggingLines
          * 
          * @access  protected
@@ -207,6 +300,34 @@
         }
 
         /**
+         * _getTraceFunctionNames
+         * 
+         * Returns function names from the trace that are useful (eg. ignores
+         * certain closures).
+         * 
+         * @access  protected
+         * @static
+         * @param   array $trace
+         * @return  array
+         */
+        protected static function _getTraceFunctionNames(array $trace): array
+        {
+            $traceFunctionNames = array();
+            array_shift($trace);
+            foreach ($trace as $traceFrame) {
+                $traceFunctionName = $traceFrame['function'] ?? null;
+                if ($traceFunctionName === null) {
+                    continue;
+                }
+                if ($traceFunctionName === 'call_user_func_array') {
+                    continue;
+                }
+                array_push($traceFunctionNames, $traceFunctionName);
+            }
+            return $traceFunctionNames;
+        }
+
+        /**
          * _renderView
          * 
          * @access  protected
@@ -236,33 +357,11 @@
          */
         protected static function _setBlocks(array $trace): void
         {
-            // filter calls to clean out function calls that aren't useful
-            $functionCalls = $trace;
-el(pr($trace, true));
-            $functionNames = array();
-            array_shift($functionCalls);
-            foreach ($functionCalls as $call) {
-                if (isset($call['function'])) {
-                    if ($call['function'] === 'call_user_func_array') {
-                        continue;
-                    }
-                    array_push($functionNames, $call['function']);
-                }
-            }
-
-            // define blocks for output
-            foreach ($trace as $traceFrame) {
-                if (isset($traceFrame['file'])) {
-                    $functionName = false;
-                    if (count($functionNames) > 0) {
-                        $functionName = array_shift($functionNames);
-                    }
-                    static::_addBlock(
-                        $traceFrame['file'],
-                        ((int) $traceFrame['line'] - 1),
-                        $functionName
-                    );
-                }
+            $traceFunctionNames = static::_getTraceFunctionNames($trace);
+            $traceFrames = static::_getFileBasedTraceFrames($trace);
+            foreach ($traceFrames as $traceFrame) {
+                $traceFunctionName = array_shift($traceFunctionNames) ?? null;
+                static::_addBlock($traceFrame, $traceFunctionName);
             }
         }
 
