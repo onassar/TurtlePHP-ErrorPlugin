@@ -100,6 +100,7 @@ div.container div.block div.content pre {
     border-radius: 4px 4px 4px 4px;
     overflow: auto;
     font-size: 0.8em;
+    color: #ffffff;
 }
 div.container div.block[data-highlight-index="0"] div.content pre ol li:nth-child(1),
 div.container div.block[data-highlight-index="1"] div.content pre ol li:nth-child(2),
