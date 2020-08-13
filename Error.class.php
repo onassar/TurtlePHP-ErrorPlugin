@@ -186,8 +186,7 @@
         {
             $contentLines = static::_getBlockOutputContentLines($traceFrame);
             $line = (int) $traceFrame['line'];
-            $configData = static::_getConfigData();
-            $maxNumberOfLines = $configData['maxNumberOfLines'];
+            $maxNumberOfLines = static::_getConfigData('maxNumberOfLines');
             $start = max(0, $line - $maxNumberOfLines - 1);
             $end = min($line + $maxNumberOfLines, ($maxNumberOfLines * 2) + 1);
             $slicedContentLines = array_slice($contentLines, $start, $end);
@@ -229,8 +228,7 @@
         protected static function _getBlockStart(array $traceFrame): int
         {
             $line = (int) $traceFrame['line'];
-            $configData = static::_getConfigData();
-            $maxNumberOfLines = $configData['maxNumberOfLines'];
+            $maxNumberOfLines = static::_getConfigData('maxNumberOfLines');
             $start = max(1, $line - $maxNumberOfLines);
             return $start;
         }
@@ -257,46 +255,21 @@
         }
 
         /**
-         * _getLoggingLines
+         * _getLoggingMessage
          * 
          * @access  protected
          * @static
          * @param   \Throwable $throwable
-         * @return  array
+         * @return  string
          */
-        protected static function _getLoggingLines(\Throwable $throwable): array
+        protected static function _getLoggingMessage(\Throwable $throwable): string
         {
-            $padLength = 11;
-            $lines = array();
-            $leading = str_pad('Message:', $padLength, ' ');
-            $value = $throwable->getMessage();
-            array_push($lines, ($leading) . ($value));
-            $leading = str_pad('File:', $padLength, ' ');
-            $value = $throwable->getFile();
-            array_push($lines, ($leading) . ($value));
-            $leading = str_pad('Line:', $padLength, ' ');
-            $value = $throwable->getLine();
-            array_push($lines, ($leading) . ($value));
-            $leading = str_pad('IP:', $padLength, ' ');
-            $value = IP;
-            array_push($lines, ($leading) . ($value));
-            $leading = str_pad('URI:', $padLength, ' ');
-            $value = static::_getLoggingURI();
-            array_push($lines, ($leading) . ($value));
-            return $lines;
-        }
-
-        /**
-         * _getLoggingURI
-         * 
-         * @access  protected
-         * @static
-         * @return  null|string
-         */
-        protected static function _getLoggingURI(): ?string
-        {
-            $uri = $_SERVER['REQUEST_URI'] ?? $_SERVER['SCRIPT_NAME'] ?? null;
-            return $uri;
+            $template = static::_getConfigData('template');
+            $path = (__DIR__) . '/templates/' . ($template) . '/log.inc.php';
+            $vars = compact('throwable');
+            $msg = \TurtlePHP\Application::renderPath($path, $vars);
+            $msg = (PHP_EOL) . ($msg);
+            return $msg;
         }
 
         /**
@@ -336,10 +309,9 @@
          */
         protected static function _renderView(): string
         {
-            $configData = static::_getConfigData();
-            $template = $configData['template'];
+            $template = static::_getConfigData('template');
             $path = (__DIR__) . '/templates/' . ($template) . '/render.inc.php';
-            $skin = $configData['skin'];
+            $skin = static::_getConfigData('skin');
             $blocks = static::$_blocks;
             $errorMessage = static::$_errorMessage;
             $vars = compact('blocks', 'errorMessage', 'skin');
@@ -375,8 +347,8 @@
          */
         protected static function _setErrorMessage(\Throwable $throwable): void
         {
-            $message = $throwable->getMessage();
-            static::$_errorMessage = $message;
+            $msg = $throwable->getMessage();
+            static::$_errorMessage = $msg;
         }
 
         /**
@@ -428,10 +400,8 @@
          */
         public static function log(\TurtlePHP\Request $request, \Throwable $throwable, array $trace): void
         {
-            $lines = static::_getLoggingLines($throwable);
-            $message = implode("\n", $lines);
-            $message = "\n" . ($message);
-            error_log($message);
+            $msg = static::_getLoggingMessage($throwable);
+            error_log($msg);
         }
     }
 
