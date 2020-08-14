@@ -71,27 +71,32 @@
          * 
          * @access  protected
          * @static
-         * @return  void
+         * @return  bool
          */
-        protected static function _addErrorDrawHook(): void
+        protected static function _addErrorDrawHook(): bool
         {
-            $hookKey = 'error';
+            $renderView = static::_getConfigData('renderView');
+            if ($renderView === false) {
+                return false;
+            }
+            $hookKey = 'error/draw';
+            \TurtlePHP\Application::clearHooks($hookKey);
             $callback = array('\TurtlePHP\Plugin\Error', 'draw');
             \TurtlePHP\Application::addHook($hookKey, $callback);
+            return true;
         }
 
         /**
          * _addErrorHooks
          * 
-         * @note    Order matters
          * @access  protected
          * @static
          * @return  void
          */
         protected static function _addErrorHooks(): void
         {
-            static::_addErrorLogHook();
             static::_addErrorDrawHook();
+            static::_addErrorLogHook();
         }
 
         /**
@@ -99,13 +104,19 @@
          * 
          * @access  protected
          * @static
-         * @return  void
+         * @return  bool
          */
-        protected static function _addErrorLogHook(): void
+        protected static function _addErrorLogHook(): bool
         {
-            $hookKey = 'error';
+            $logErrors = static::_getConfigData('logErrors');
+            if ($logErrors === false) {
+                return false;
+            }
+            $hookKey = 'error/log';
+            \TurtlePHP\Application::clearHooks($hookKey);
             $callback = array('\TurtlePHP\Plugin\Error', 'log');
             \TurtlePHP\Application::addHook($hookKey, $callback);
+            return true;
         }
 
         /**
@@ -118,19 +129,6 @@
         protected static function _checkDependencies(): void
         {
             static::_checkConfigPluginDependency();
-        }
-
-        /**
-         * _clearErrorHook
-         * 
-         * @access  protected
-         * @static
-         * @return  void
-         */
-        protected static function _clearErrorHook(): void
-        {
-            $hookKey = 'error';
-            \TurtlePHP\Application::clearHooks($hookKey);
         }
 
         /**
@@ -301,25 +299,6 @@
         }
 
         /**
-         * _renderView
-         * 
-         * @access  protected
-         * @static
-         * @return  string
-         */
-        protected static function _renderView(): string
-        {
-            $template = static::_getConfigData('template');
-            $path = (__DIR__) . '/templates/' . ($template) . '/render.inc.php';
-            $skin = static::_getConfigData('skin');
-            $blocks = static::$_blocks;
-            $errorMessage = static::$_errorMessage;
-            $vars = compact('blocks', 'errorMessage', 'skin');
-            $response = static::_renderPath($path, $vars);
-            return $response;
-        }
-
-        /**
          * _setBlocks
          * 
          * @access  protected
@@ -329,6 +308,7 @@
          */
         protected static function _setBlocks(array $trace): void
         {
+            static::$_blocks = array();
             $traceFunctionNames = static::_getTraceFunctionNames($trace);
             $traceFrames = static::_getFileBasedTraceFrames($trace);
             foreach ($traceFrames as $traceFrame) {
@@ -352,6 +332,20 @@
         }
 
         /**
+         * addCustomHook
+         * 
+         * @access  public
+         * @static
+         * @param   callable $hook
+         * @return  void
+         */
+        public static function addCustomHook(callable $hook): void
+        {
+            $hookKey = 'error/custom';
+            \TurtlePHP\Application::addHook($hookKey, $hook);
+        }
+
+        /**
          * draw
          * 
          * @access  public
@@ -363,11 +357,8 @@
          */
         public static function draw(\TurtlePHP\Request $request, \Throwable $throwable, array $trace): void
         {
-            static::_setBlocks($trace);
-            static::_setErrorMessage($throwable);
-            $response = static::_renderView();
+            $response = static::renderView($request, $throwable, $trace);
             $request->setResponse($response);
-            exit(0);
         }
 
         /**
@@ -383,7 +374,6 @@
                 return false;
             }
             parent::init();
-            static::_clearErrorHook();
             static::_addErrorHooks();
             return true;
         }
@@ -402,6 +392,30 @@
         {
             $msg = static::_getLoggingMessage($throwable);
             error_log($msg);
+        }
+
+        /**
+         * renderView
+         * 
+         * @access  public
+         * @static
+         * @param   \TurtlePHP\Request $request
+         * @param   \Throwable $throwable
+         * @param   array $trace
+         * @return  string
+         */
+        public static function renderView(\TurtlePHP\Request $request, \Throwable $throwable, array $trace): string
+        {
+            static::_setBlocks($trace);
+            static::_setErrorMessage($throwable);
+            $template = static::_getConfigData('template');
+            $path = (__DIR__) . '/templates/' . ($template) . '/view.inc.php';
+            $skin = static::_getConfigData('skin');
+            $blocks = static::$_blocks;
+            $errorMessage = static::$_errorMessage;
+            $vars = compact('blocks', 'errorMessage', 'skin');
+            $response = static::_renderPath($path, $vars);
+            return $response;
         }
     }
 

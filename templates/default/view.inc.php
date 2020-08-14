@@ -1,7 +1,6 @@
 <?php
 
     // Headers
-    $host = $_SERVER['HTTP_HOST'] ?? ':unknown:';
     $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
     header(($protocol) . ' 503 Service Temporarily Unavailable');
     header('Status: 503 Service Temporarily Unavailable');
@@ -93,7 +92,7 @@
             <footer>
                 <span><?= date('D, d M o G:i:s T') ?></span>
                 <span><?= (IP) ?></span>
-                <span><?= ($host) ?></span>
+                <span><?= ($_SERVER['HTTP_HOST'] ?? ':unknown:') ?></span>
             </footer>
         </div>
         <script type="text/javascript">

@@ -4,10 +4,13 @@
      * Plugin Config Data
      * 
      */
+    $logErrors = true;
     $maxNumberOfLines = 10;
+    $renderView = true;
     $skin = 'sunburst';
     $template = 'archived';
-    $pluginConfigData = compact('maxNumberOfLines', 'skin', 'template');
+    $args = array('logErrors', 'maxNumberOfLines', 'renderView', 'skin', 'template');
+    $pluginConfigData = compact(... $args);
 
     /**
      * Storage
