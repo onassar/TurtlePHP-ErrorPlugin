@@ -359,6 +359,7 @@
         {
             $response = static::renderView($request, $throwable, $trace);
             $request->setResponse($response);
+            $request->setServiceUnavailableHeaders();
         }
 
         /**

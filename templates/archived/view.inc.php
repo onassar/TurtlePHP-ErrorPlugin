@@ -6,16 +6,6 @@
         $host = $_SERVER['HTTP_HOST'];
     }
 
-    // error headers
-    $protocol = 'HTTP/1.1';
-    if (isset($_SERVER['SERVER_PROTOCOL']) === true) {
-        $protocol = $_SERVER['SERVER_PROTOCOL'];
-    }
-    header(($protocol) . ' 503 Service Temporarily Unavailable');
-    header('Status: 503 Service Temporarily Unavailable');
-    header('Retry-After: 7200');
-    header('Content-Type: text/html; charset=utf-8');
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
