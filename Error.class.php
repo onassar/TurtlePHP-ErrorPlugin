@@ -1,6 +1,7 @@
 <?php
 
-    // namespace
+
+    // Namespace overhead
     namespace TurtlePHP\Plugin;
 
     /**
