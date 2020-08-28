@@ -83,6 +83,7 @@
                 <span><?= date('D, d M o G:i:s T') ?></span>
                 <span><?= (IP) ?></span>
                 <span><?= ($_SERVER['HTTP_HOST'] ?? ':unknown:') ?></span>
+                <span><?= ($_SERVER['SERVER_ADDR'] ?? ':unknown:') ?></span>
             </footer>
         </div>
         <script type="text/javascript">

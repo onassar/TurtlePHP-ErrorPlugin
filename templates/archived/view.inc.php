@@ -1,10 +1,3 @@
-<?php
-
-    // Support for CLI
-    $host = $_SERVER['HTTP_HOST'] ?? ':unknown:';
-    $serverAddress = $_SERVER['SERVER_ADDR'] ?? ':unknown:';
-
-?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -151,8 +144,8 @@
                 <footer class="span8 offset2">
                     <span><?= date('D, d M o G:i:s T') ?></span>
                     <span><?= (IP) ?></span>
-                    <span><?= ($host) ?></span>
-                    <span><?= ($serverAddress) ?></span>
+                    <span><?= ($_SERVER['HTTP_HOST'] ?? ':unknown:') ?></span>
+                    <span><?= ($_SERVER['SERVER_ADDR'] ?? ':unknown:') ?></span>
                 </footer>
             </div>
         </div>
