@@ -1,10 +1,8 @@
 <?php
 
     // Support for CLI
-    $host = 'unknown';
-    if (isset($_SERVER['HTTP_HOST']) === true) {
-        $host = $_SERVER['HTTP_HOST'];
-    }
+    $host = $_SERVER['HTTP_HOST'] ?? ':unknown:';
+    $serverAddress = $_SERVER['SERVER_ADDR'] ?? ':unknown:';
 
 ?>
 <!DOCTYPE html>
@@ -154,6 +152,7 @@
                     <span><?= date('D, d M o G:i:s T') ?></span>
                     <span><?= (IP) ?></span>
                     <span><?= ($host) ?></span>
+                    <span><?= ($serverAddress) ?></span>
                 </footer>
             </div>
         </div>
