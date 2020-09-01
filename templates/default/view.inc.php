@@ -79,6 +79,85 @@
 <?php
     endforeach;
 ?>
+            <div class="meta">
+                <div class="context">
+                    <h4>$_GET</h4>
+                    <div class="hash">
+                        <?php foreach ($_GET ?? array() as $key => $value): ?>
+                            <div class="pair clearfix">
+                                <div class="key"><?= ($key) ?></div>
+                                <div class="value"><?= ($value) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="context">
+                    <h4>$_POST</h4>
+                    <div class="hash">
+                        <?php foreach ($_POST ?? array() as $key => $value): ?>
+                            <div class="pair clearfix">
+                                <div class="key"><?= ($key) ?></div>
+                                <div class="value"><?= ($value) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="context">
+                    <h4>$_PATCH</h4>
+                    <div class="hash">
+                        <?php foreach ($_PATCH ?? array() as $key => $value): ?>
+                            <div class="pair clearfix">
+                                <div class="key"><?= ($key) ?></div>
+                                <div class="value"><?= ($value) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="context">
+                    <h4>$_DELETE</h4>
+                    <div class="hash">
+                        <?php foreach ($_DELETE ?? array() as $key => $value): ?>
+                            <div class="pair clearfix">
+                                <div class="key"><?= ($key) ?></div>
+                                <div class="value"><?= ($value) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="context">
+                    <h4>$_COOKIE</h4>
+                    <div class="hash">
+                        <?php foreach ($_COOKIE ?? array() as $key => $value): ?>
+                            <div class="pair clearfix">
+                                <div class="key"><?= ($key) ?></div>
+                                <div class="value"><?= ($value) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="context">
+                    <h4>$_SERVER</h4>
+                    <div class="hash">
+                        <?php foreach ($_SERVER ?? array() as $key => $value): ?>
+                            <div class="pair clearfix">
+                                <div class="key"><?= ($key) ?></div>
+                                <div class="value"><?= ($value) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="context">
+                    <h4>$_SESSION</h4>
+                    <div class="hash">
+                        <?php foreach ($_SESSION ?? array() as $key => $value): ?>
+                            <div class="pair clearfix">
+                                <div class="key"><?= ($key) ?></div>
+                                <div class="value"><?= ($value) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
             <footer>
                 <span><?= date('D, d M o G:i:s T') ?></span>
                 <span><?= (IP) ?></span>

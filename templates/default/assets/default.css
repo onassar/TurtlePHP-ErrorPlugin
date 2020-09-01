@@ -2,6 +2,11 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #333333;
 }
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
 div.container {
     width: 100%;
     max-width: 770px;
@@ -119,6 +124,50 @@ div.container div.block[data-highlight-index="13"] div.content pre ol li:nth-chi
 div.container div.block[data-highlight-index="14"] div.content pre ol li:nth-child(15) {
     outline: 1px dashed #cccccc;
     outline-offset: -1px;
+}
+
+/**
+ * Meta
+ * 
+ */
+div.container div.meta {
+    border-top: 1px solid #eeeeee;
+    margin-top: 15px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+div.container div.meta div.context {
+    margin: 0 0 12px 0;
+}
+div.container div.meta div.context h4 {
+    margin: 0 0 0 0;
+    padding: 0 0 4px 0;
+    height: 21px;
+    line-height: 21px;
+    font-size: 18px;
+}
+div.container div.meta div.context div.hash div.pair {
+    font-size: 16px;
+}
+div.container div.meta div.context div.hash div.pair div.key,
+div.container div.meta div.context div.hash div.pair div.value {
+    line-height: 21px;
+}
+div.container div.meta div.context div.hash div.pair div.key {
+    height: 21px;
+    float: left;
+    width: 224px;
+    margin: 0 12px 0 0;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+div.container div.meta div.context div.hash div.pair div.value {
+    font-size: 15px;
+    float: left;
+    width: calc(100% - 12px - 224px);
+    overflow-wrap: break-word;
 }
 div.container footer {
     text-align: right;
