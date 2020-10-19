@@ -169,6 +169,11 @@ div.container div.meta div.context div.hash div.pair div.value {
     width: calc(100% - 12px - 224px);
     overflow-wrap: break-word;
 }
+div.container div.meta div.context div.hash div.pair div.value pre {
+    font-size: 12px;
+    line-height: 1.2em;
+    margin: 0 0 0 0;
+}
 div.container footer {
     text-align: right;
     font-size: 13px;

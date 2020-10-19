@@ -91,7 +91,7 @@
                         ?>
                             <div class="pair clearfix">
                                 <div class="key"><?= ($key) ?></div>
-                                <div class="value"><?= ($value) ?></div>
+                                <div class="value"><pre><?= ($value) ?></pre></div>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -107,7 +107,7 @@
                         ?>
                             <div class="pair clearfix">
                                 <div class="key"><?= ($key) ?></div>
-                                <div class="value"><?= ($value) ?></div>
+                                <div class="value"><pre><?= ($value) ?></pre></div>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -123,7 +123,7 @@
                         ?>
                             <div class="pair clearfix">
                                 <div class="key"><?= ($key) ?></div>
-                                <div class="value"><?= ($value) ?></div>
+                                <div class="value"><pre><?= ($value) ?></pre></div>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -139,7 +139,7 @@
                         ?>
                             <div class="pair clearfix">
                                 <div class="key"><?= ($key) ?></div>
-                                <div class="value"><?= ($value) ?></div>
+                                <div class="value"><pre><?= ($value) ?></pre></div>
                             </div>
                         <?php endforeach; ?>
                     </div>
