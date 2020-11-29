@@ -107,6 +107,15 @@ div.container div.block div.content pre {
     font-size: 0.8em;
     color: #ffffff;
 }
+div.container div.block div.content pre::-webkit-scrollbar {
+    -webkit-appearance: none;
+    height: 8px;
+    border-radius: 100px 100px 100px 100px;
+}
+div.container div.block div.content pre::-webkit-scrollbar-thumb {
+    border-radius: 100px 100px 100px 100px;
+    background-color: #93989e;
+}
 div.container div.block[data-highlight-index="0"] div.content pre ol li:nth-child(1),
 div.container div.block[data-highlight-index="1"] div.content pre ol li:nth-child(2),
 div.container div.block[data-highlight-index="2"] div.content pre ol li:nth-child(3),
