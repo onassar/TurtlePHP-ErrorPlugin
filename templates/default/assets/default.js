@@ -6,7 +6,7 @@
 (function() {
 
     /**
-     * Properties
+     * Properties (private)
      * 
      */
 
@@ -19,7 +19,7 @@
     var __animatingClassName = 'flip';
 
     /**
-     * Methods
+     * Methods (private)
      * 
      */
 
